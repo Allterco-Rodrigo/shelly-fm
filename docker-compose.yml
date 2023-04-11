@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+# database
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27027:27017"
+    networks:
+      - fm-app
+    volumes:
+      - mongodb:/data/db
+# backend
+  api:
+    image: api
+    build: ./shelly-fm-be/
+    ports:
+      - "5050:5050"
+    networks:
+      - fm-app
+    depends_on:
+      - mongodb
+    volumes:
+      - ./shelly-fm-be/:/usr/src/app
+      - /usr/src/app/node_modules
+# frontend
+  web:
+    image: web
+    build: ./shelly-fm-fe/
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    networks:
+      - fm-app
+    volumes:
+      - ./shelly-fm-fe/:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - api
+# connect all networks
+networks:
+  fm-app:
+    driver: bridge
+
+volumes:
+  mongodb:
+    driver: local
