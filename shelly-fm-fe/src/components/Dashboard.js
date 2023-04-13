@@ -31,9 +31,10 @@ import { refreshDevicesData, patchConnectedDevices } from '../services/device';
 import DeviceAdd from './Device/DeviceAdd';
 import Message from './Message';
 import Test from './Test';
+import DeviceUpd from './Device/DeviceUpd';
 
 const drawerWidth = 220;
-const copy = "Copyright© by Allterco Robotics " + new Date().getFullYear();
+const copy = "Copyright© by Allterco Robotics - " + new Date().getFullYear();
 
 
 export default function Dashboard() {
@@ -77,9 +78,9 @@ export default function Dashboard() {
   const handleClickDevicesCreate = () => {
     navigate("/device/add")
   };
-  // const handleClickDevicesUpdate = () => {
-  //   navigate("/device/upd")
-  // };
+  const handleClickDevicesUpdate = () => {
+    navigate("/device/upd")
+  };
   // const handleClickDevicesDelete = () => {
   //   navigate("/device/del")
   // };
@@ -97,6 +98,7 @@ export default function Dashboard() {
           navigate("/")
         }
       })
+      return ret
   };
 
   // Refresh list of connected devices and their data
@@ -106,6 +108,7 @@ export default function Dashboard() {
     .then(()=>{
       navigate("/loadingpage/t90")
     })
+    return ret
   };
 
 
@@ -349,25 +352,25 @@ export default function Dashboard() {
                 <ListItemIcon>
                   <AddCircleIcon />
                 </ListItemIcon>
-                <ListItemText primary="Create" />
+                <ListItemText primary="Add new to the network (Provision)" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton sx={{ pl: 4 }} onClick={handleClickDevicesUpdate}>
                 <ListItemIcon>
                   <ChangeCircle />
                 </ListItemIcon>
-                <ListItemText primary="Update" />
+                <ListItemText primary="Update Settings" />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }}>
                 <ListItemIcon>
                   <RemoveCircle />
                 </ListItemIcon>
-                <ListItemText primary="Delete" />
+                <ListItemText primary="Remove (Factory Reset)" />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }} onClick={reloadDevices}>
                 <ListItemIcon>
                   <ZoomInOutlined />
                 </ListItemIcon>
-                <ListItemText primary="Search Network & add devices" />
+                <ListItemText primary="Scan for newly added devices" />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }}  onClick={refreshData}>
                 <ListItemIcon>
@@ -397,6 +400,7 @@ export default function Dashboard() {
             <Route path="/room/all" element={<Room />} />
             <Route path="/device/all" element={<Device />} />
             <Route path="/device/add" element={<DeviceAdd />} />
+            <Route path="/device/upd" element={<DeviceUpd />} />
             <Route path="/loadingpage/t10" element={<Message text="Loading data" delay="10" />} />
             <Route path="/loadingpage/t90" element={<Message text="Scanning Network" delay="90" />} />
             <Route path="/test" element={<Test />} />

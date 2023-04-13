@@ -17,8 +17,13 @@ export const patchConnectedDevices = async () => {
     return data
 };
 
-export const addDiscoveredDevices = async (ssid,pass,prefix) => {
-  const data = await client.post("/device/add",{"ssid":ssid,"pass":pass,"prefix":prefix});
+export const addDiscoveredDevices = async (ssid,pass,prefix,mqttServer,mqttPassword) => {
+  const data = await client.post("/device/add",{"ssid":ssid,"pass":pass,"prefix":prefix,"mqttServer":mqttServer,"mqttPassword":mqttPassword});
+  return data
+}
+
+export const updDiscoveredDevices = async (ssid,pass,mqttServer,mqttPassword) => {
+  const data = await client.patch("/device/upd",{"ssid":ssid,"pass":pass,"mqttServer":mqttServer,"mqttPassword":mqttPassword});
   return data
 }
 

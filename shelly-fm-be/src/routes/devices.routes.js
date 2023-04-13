@@ -26,6 +26,9 @@ devices.get("/list", async (req, res) => {
 
 devices.post("/device/add", async (req, res) => {
     console.log("Provisioning...")
-    const data = await addDiscoveredDevices(req.body.ssid,req.body.pass,req.body.prefix)
+    const data = await addDiscoveredDevices(
+        req.body.ssid,req.body.pass,req.body.prefix,
+        req.body.mqttServer,res.body.mqttPassword
+        )
     res.send(data)
 })

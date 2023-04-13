@@ -14,11 +14,14 @@ export default function DeviceAdd() {
 
   const [prefix, setPrefix] = useState('shelly');
   const [ssid, setSsid] = useState('');
-  const [password, setPassword] = useState('');  
+  const [password, setPassword] = useState('');
+
+  const [mqttServer, setMqttServer] = useState('');
+  const [mqttPassword, setMqttPassword] = useState('');
 
   async function handleClick() {  
     setShow(!show)
-    const x = await addDiscoveredDevices(ssid,password,prefix)
+    const x = await addDiscoveredDevices(ssid,password,prefix,mqttServer,mqttPassword)
     setCnt(x.data.cnt)
     setCntErr(x.data.cntErr)
   }
@@ -27,7 +30,11 @@ export default function DeviceAdd() {
     <Layout>
         <Content style={{ margin: "20px 16px" }}>
           <Space direction="vertical">
-            <Title level={2}>Provision Devices</Title>            
+            <Title level={2}>Provision Devices</Title>
+            <Typography variant="h8" noWrap component="span">
+              Here you set the credentials necessary for all <br /> 
+              broadcasting devices connect to the network
+            </Typography>
             <TextField
             label="PREFIX"
             value={prefix}
@@ -52,7 +59,29 @@ export default function DeviceAdd() {
             variant="filled"
             size="small"
             type="password"
-          />          
+          />
+
+          <Typography variant="h8" noWrap component="span">
+              Here you set the credentials necessary for all <br /> 
+              broadcasting devices connect to a MQTT server
+            </Typography>
+            <TextField
+            label="MQTT Server Address"
+            value={mqttServer}
+            onChange={(e) => setMqttServer(e.target.value)}
+            margin="normal"
+            variant="filled"
+            size="small"
+          />
+          <TextField
+            label="Password"
+            value={mqttPassword}
+            onChange={(e) => setMqttPassword(e.target.value)}
+            margin="normal"
+            variant="filled"
+            size="small"
+            type="password"
+          />           
           <Button variant="contained" color="primary" onClick={handleClick}>
             Search and provision devices
           </Button>

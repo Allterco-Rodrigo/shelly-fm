@@ -17,7 +17,7 @@ import { delay } from './supportFunctions.js';
 
 let SSID_LIST = [];
 let SHELLY_DEVICE = [];
-let CONFIG_PASS, CONFIG_SSID, CONFIG_PREFIX
+let CONFIG_PASS, CONFIG_SSID, CONFIG_PREFIX, CONFIG_MQTT_SERVER, CONFIG_MQTT_PASS
 
 // ----------------------------------------------------------------------------------- CHAT GPT \/
 
@@ -68,12 +68,15 @@ async function provision_device_recursive(index) {
     return provision_device_recursive(index + 1);
 }
 
-export async function provisionDevice(ssid,pass,prefix) {
+export async function provisionDevice(ssid,pass,prefix,mqttServer,mqttPassword) {
     SHELLY_DEVICE = [];
 
     CONFIG_SSID = ssid
     CONFIG_PASS = pass
     CONFIG_PREFIX = prefix
+    CONFIG_MQTT_SERVER = mqttServer
+    CONFIG_MQTT_PASS = mqttPassword
+
 
     await list_available_ssids_promise();
 
@@ -155,6 +158,31 @@ async function set_wifi_credentials (DEVICE_SSID, DEVICE_PASS, gen) {
         command = `http://192.168.33.1/settings/sta?ssid=${DEVICE_SSID}&key=${DEVICE_PASS}&enabled=1`
     } else {
         command = `http://192.168.33.1/rpc/WiFi.SetConfig?config={"sta":{"ssid":"${DEVICE_SSID}","pass":"${DEVICE_PASS}","enable":true}}` 
+    }
+ 
+    try {
+
+        console.log(command)
+        const x = await fetch(command)
+        
+        CONFIG_MQTT_SERVER.length > 0
+        ? set_mqtt_credentials(CONFIG_MQTT_SERVER,CONFIG_MQTT_PASS, gen)
+        : console.log("NO MQTT server set")
+
+    } catch (error) {
+        console.error("ERROR \n\n",error)
+    }
+
+}
+
+async function set_mqtt_credentials (MQTT_SERVER, MQTT_PASS, gen) {
+    console.log("Sending MQTT credentials to device")
+    let command
+    // set the command for different generations 
+    if(gen === 1){
+        command = `http://192.168.33.1/settings?mqtt_server=${MQTT_SERVER}&mqtt_pass=${MQTT_PASS}&mqtt_enable=true`
+    } else {
+        command = `http://192.168.33.1/rpc/MQTT.SetConfig?config={"server":"${MQTT_SERVER}","pass":"${MQTT_PASS}","enable":true}` 
     }
  
     try {

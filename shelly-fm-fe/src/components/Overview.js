@@ -33,11 +33,11 @@ export default function Overview() {
 
   return (<>
     <div>
-      <h1>Current Day Total Energy Consumed</h1>
+      <h1>Current Day - Total Energy Consumed</h1>
       <Statistic title="Kw/h" value={data[0].totalEnergy/1000} precision={3}></Statistic>
     </div>
     <div>
-      <h1>Current Month Total Energy Consumed</h1>
+      <h1>Current Month - Total Energy Consumed</h1>
       <Statistic title="Kw/h" value={pastData[0].totalEnergy/1000} precision={3}></Statistic>
     </div>
     {/* <div>
