@@ -31,7 +31,7 @@ export default function DeviceAdd() {
         <Content style={{ margin: "20px 16px" }}>
           <Space direction="vertical">
             <Title level={2}>Provision Devices</Title>
-            <Typography variant="h8" noWrap component="span">
+            <Typography variant="h8" component="span">
               Here you set the credentials necessary for all <br /> 
               broadcasting devices connect to the network
             </Typography>
@@ -61,7 +61,7 @@ export default function DeviceAdd() {
             type="password"
           />
 
-          <Typography variant="h8" noWrap component="span">
+          <Typography variant="h8" component="span">
               Here you set the credentials necessary for all <br /> 
               broadcasting devices connect to a MQTT server
             </Typography>

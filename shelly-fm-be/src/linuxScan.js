@@ -150,7 +150,7 @@ async function get_gen1_gen2 () {
      return {"gen":-1}
 }
 
-async function set_wifi_credentials (DEVICE_SSID, DEVICE_PASS, gen) {
+export async function set_wifi_credentials (DEVICE_SSID, DEVICE_PASS, gen) {
     console.log("Sending wifi credentials to device")
     let command
     // set the command for different generations 
@@ -175,7 +175,7 @@ async function set_wifi_credentials (DEVICE_SSID, DEVICE_PASS, gen) {
 
 }
 
-async function set_mqtt_credentials (MQTT_SERVER, MQTT_PASS, gen) {
+export async function set_mqtt_credentials (MQTT_SERVER, MQTT_PASS, gen) {
     console.log("Sending MQTT credentials to device")
     let command
     // set the command for different generations 

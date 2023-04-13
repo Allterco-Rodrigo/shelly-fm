@@ -7,13 +7,15 @@ export const getDb = async () => {
 
   await client.connect();
   return client.db("shelly-fm-db");
+  // return client.db("shelly-dcc");
+
 };
 
 export const getTestMongo = async () => {
   const client = new MongoClient(MONGO_PRD)
   await client.connect();
-  const local =  client.db("local");
-  const data = local.collection("startup_log")
+  const local =  client.db("shelly-dcc");
+  const data = local.collection("devicesCurrentData")
   return data.find().toArray()
 }
 

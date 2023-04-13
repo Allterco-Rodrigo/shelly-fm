@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addDiscoveredDevices, getConnectedDevices, patchConnectedDevices, refreshDevicesData,  } from "../services/devices.services.js";
+import { addDiscoveredDevices, delDeviceById, getConnectedDevices, getDeviceById, patchConnectedDevices, refreshDevicesData, updDeviceById,  } from "../services/devices.services.js";
 
 export const devices = Router();
 let a = 0
@@ -24,11 +24,29 @@ devices.get("/list", async (req, res) => {
     res.send(data)
 })
 
+devices.get("/device/:id", async (req, res) => {
+    console.log("Retrieving data from device. Please wait.")
+    const data = await getDeviceById(req.params)
+    res.send(data)
+})
+
 devices.post("/device/add", async (req, res) => {
     console.log("Provisioning...")
     const data = await addDiscoveredDevices(
         req.body.ssid,req.body.pass,req.body.prefix,
         req.body.mqttServer,res.body.mqttPassword
         )
+    res.send(data)
+})
+
+devices.patch("/device/upd/:id", async (req, res) => {
+    console.log("Updating...")
+    const data = await updDeviceById(req.params, req.body)
+    res.send(data)
+})
+
+devices.patch("/device/del/:id", async (req, res) => {
+    console.log("Deleting...")
+    const data = await delDeviceById(req.params, req.body)
     res.send(data)
 })

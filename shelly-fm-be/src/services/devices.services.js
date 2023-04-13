@@ -3,6 +3,7 @@ import { scanConnectedDevicesToDb } from "../nmapScan.js";
 import fetch from "node-fetch";
 import { presentDate, yesterday } from "../supportFunctions.js";
 import { provisionDevice } from "../linuxScan.js";
+import { ObjectId } from "mongodb";
 
 let done = true
 
@@ -18,7 +19,7 @@ export const refreshDevicesData = async () => {
       done = true
     })
     .catch(()=>{
-      console.log("Error")
+      console.log("Error Refreshing Device's Data")
       done = false
     })
   return done
@@ -84,8 +85,15 @@ export const getConnectedDevices = async () => {
     return devices;
   }
   else 
+    console.log("No data returned")
     return false
 };
+
+export const getDeviceById = async (id) => {
+  const col = await getDeviceCurrentDataCollection();
+  const device = await col.findOne({ _id: new ObjectId(id) });
+  return device
+}
 
 // adds/updates only shelly products to the list
 export const addShellyDevice = async (obj) => {
@@ -453,6 +461,71 @@ export const addShellyDevice = async (obj) => {
   }
 }
 
+export const updDeviceById = async (id,obj) => {
+  const col = await getDeviceCurrentDataCollection();
+  obj.updatedAt = new Date();
+  await col.updateOne({ _id: new ObjectId(id) }, { $set: obj });
+  
+  // provision
+  console.log("Sending command to device")
+  let command
+
+  if(obj.wifi !== "")
+    if(obj.deviceGen === 1){
+      command = `http://${obj.deviceIp}/settings/sta?ssid=${obj.wifi}&key=${obj.password}&enabled=1`
+    } else {
+      command = `http://${obj.deviceIp}/rpc/WiFi.SetConfig?config={"sta":{"ssid":"${obj.wifi}","pass":"${obj.password}","enable":true}}` 
+    }
+  else {
+    if(obj.mqttServer !== "")
+      if(obj.deviceGen === 1){
+          command = `http://${obj.deviceIp}/settings?mqtt_server=${obj.mqttServer}&mqtt_pass=${obj.mqttPassword}&mqtt_enable=true`
+      } else {
+          command = `http://${obj.deviceIp}/rpc/MQTT.SetConfig?config={"server":"${obj.mqttServer}","pass":"${obj.mqttPassword}","enable":true}` 
+      }
+      else {
+        if(obj.deviceName !== "")
+          if(obj.deviceGen === 1){
+              command = `http://${obj.deviceIp}/settings/?name=${obj.deviceName}`
+          } else {
+              command = `http://${obj.deviceIp}/rpc/Sys.SetConfig?config={"device":{"name":"${obj.deviceName}"}}` 
+          }
+        
+      }
+  }
+  try {
+      // console.log(command)
+      const x = await fetch(command)
+  } catch (error) {
+      console.error("ERROR \n\n",error)
+  }
+}
+
+export const delDeviceById = async (id,obj) => {
+  const col = await getDeviceCurrentDataCollection();
+  obj.deletedAt = new Date();
+  obj.displayData = 1
+  await col.updateOne({ _id: new ObjectId(id) }, { $set: obj });
+  
+  // provision
+  console.log("Sending command to device")
+  let command
+
+    if(obj.deviceGen === 1){
+      command = `http://${obj.deviceIp}/settings/reset`
+    } else {
+      command = `http://${obj.deviceIp}/rpc/Shelly.FactoryReset` 
+    }
+
+  try {
+      console.log(command)
+      const x = await fetch(command)
+  } catch (error) {
+      console.error("ERROR \n\n",error)
+  }
+}
+
+
 // getting information from the device
 export async function getDeviceInfo(ip) {
   
@@ -555,7 +628,19 @@ export async function checkForUpdate(ip) {
 }
 
 // provisioning
-export const addDiscoveredDevices = async (ssid,pass,prefix) => {  
-  const x = provisionDevice(ssid,pass,prefix)
+export const addDiscoveredDevices = async (ssid,pass,prefix,mqttServer,mqttPassword) => {  
+  const x = provisionDevice(ssid,pass,prefix,mqttServer,mqttPassword)
   return x
+}
+
+
+// MQTT functions
+
+export async function subscribeToAllDevices () {
+  // get all devices from DB
+  // get the mqttServer 
+  // get the mqttClientId
+  // subscribe to topics
+  
+
 }
