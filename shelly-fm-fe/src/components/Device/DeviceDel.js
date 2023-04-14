@@ -2,12 +2,13 @@ import { Col, Layout, Row, Select, Space, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { delDeviceById, getConnectedDevices, getDeviceById } from "../../services/device";
 import { Button, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 const { Content } = Layout;
 
-export default function DeviceUpd() {  
-
+export default function DeviceDel() {  
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [value, setValue] = useState();
   
@@ -35,12 +36,25 @@ export default function DeviceUpd() {
   };
 
   async function handleDelete() {
+    
     let obj = {
       "deviceIp":deviceIp,
       "deviceGen":deviceGen,
       "reason":reason,
     }
-    const x = await delDeviceById(deviceId,obj)
+    
+    delDeviceById(deviceId,obj)
+    navigate("/loadingpage/t0")
+      // .then((success)=>{
+      //   if(success){
+      //     navigate("/loadingpage/t10")
+      //   }
+      //   else {
+      //     // console.log("Refresh failed") 
+      //     navigate("/")
+      //   }
+      // })
+
   }
   
   return (

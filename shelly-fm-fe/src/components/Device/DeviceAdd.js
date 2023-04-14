@@ -2,12 +2,13 @@ import { Layout, Space, Spin, Typography } from "antd";
 import React, { useState } from "react";
 import { addDiscoveredDevices } from "../../services/device";
 import { Button, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 const { Content } = Layout;
 
 export default function DeviceAdd() {  
-
+  const navigate = useNavigate();
   const [cnt, setCnt] = useState(0);
   const [cntErr, setCntErr] = useState(0);
   const [show, setShow] = useState(false);
@@ -19,18 +20,26 @@ export default function DeviceAdd() {
   const [mqttServer, setMqttServer] = useState('');
   const [mqttPassword, setMqttPassword] = useState('');
 
-  async function handleClick() {  
+  async function handleClick() {
     setShow(!show)
-    const x = await addDiscoveredDevices(ssid,password,prefix,mqttServer,mqttPassword)
-    setCnt(x.data.cnt)
-    setCntErr(x.data.cntErr)
+    addDiscoveredDevices(ssid,password,prefix,mqttServer,mqttPassword)
+    navigate("/loadingpage/t0")
+      // .then((success)=>{
+      //   if(success){
+      //     navigate("/loadingpage/t10")
+      //   }
+      //   else {
+      //     // console.log("Refresh failed") 
+      //     navigate("/")
+      //   }
+      // })
   }
 
   return (
     <Layout>
         <Content style={{ margin: "20px 16px" }}>
           <Space direction="vertical">
-            <Title level={2}>Provision Devices</Title>
+            <Title level={2}>Provision a new Device</Title>
             <Typography variant="h8" component="span">
               Here you set the credentials necessary for all <br /> 
               broadcasting devices connect to the network

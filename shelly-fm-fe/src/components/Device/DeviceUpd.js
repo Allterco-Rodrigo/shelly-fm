@@ -2,12 +2,13 @@ import { Col, Layout, Row, Select, Space, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { getConnectedDevices, getDeviceById, updDeviceById } from "../../services/device";
 import { Button, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 const { Content } = Layout;
 
 export default function DeviceUpd() {  
-
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [value, setValue] = useState();
   
@@ -48,15 +49,13 @@ export default function DeviceUpd() {
     let obj = {
       "deviceIp":deviceIp,
       "deviceGen":deviceGen,
-      "deviceName":"",
-      "wifi":"",
-      "password":"",
-      "mqttServer":"",
-      "mqttPassword":""
+      "deviceName":deviceName,
+      "wifi":wifi,
+      "mqttServer":mqttServer,
     }
-
+    
     if(i === 0)
-      obj.deviceName = deviceName
+    obj.deviceName = deviceName
     if(i === 1){
       obj.wifi = wifi
       obj.password = password
@@ -65,15 +64,25 @@ export default function DeviceUpd() {
       obj.mqttServer = mqttServer
       obj.mqttPassword = mqttPassword
     }
-
-    const x = await updDeviceById(deviceId,obj)
+    
+    updDeviceById(deviceId,obj)
+    navigate("/loadingpage/t0")
+      // .then((success)=>{
+      //   if(success){
+      //     navigate("/loadingpage/t10")
+      //   }
+      //   else {
+      //     // console.log("Refresh failed") 
+      //     navigate("/")
+      //   }
+      // })
   }
   
   return (
     <Layout>
         <Content style={{ margin: "20px 16px" }}>
           <Space direction="vertical">
-          <Title level={2}>Update Name / Devices Wi-Fi / MQTT</Title>
+          <Title level={2}>Update Name / Wi-Fi / MQTT</Title>
 
           <Select
             name="deviceList"

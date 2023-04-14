@@ -32,6 +32,7 @@ import DeviceAdd from './Device/DeviceAdd';
 import Message from './Message';
 import Test from './Test';
 import DeviceUpd from './Device/DeviceUpd';
+import DeviceDel from './Device/DeviceDel';
 
 const drawerWidth = 220;
 const copy = "Copyright© by Allterco Robotics - " + new Date().getFullYear();
@@ -81,9 +82,9 @@ export default function Dashboard() {
   const handleClickDevicesUpdate = () => {
     navigate("/device/upd")
   };
-  // const handleClickDevicesDelete = () => {
-  //   navigate("/device/del")
-  // };
+  const handleClickDevicesDelete = () => {
+    navigate("/device/del")
+  };
 
   // Refresh data from already connected devices
   async function refreshData() {
@@ -352,7 +353,7 @@ export default function Dashboard() {
                 <ListItemIcon>
                   <AddCircleIcon />
                 </ListItemIcon>
-                <ListItemText primary="Add new to the network (Provision)" />
+                <ListItemText primary="Add manually (Provision)" />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }} onClick={handleClickDevicesUpdate}>
                 <ListItemIcon>
@@ -360,7 +361,7 @@ export default function Dashboard() {
                 </ListItemIcon>
                 <ListItemText primary="Update Settings" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton sx={{ pl: 4 }} onClick={handleClickDevicesDelete}>
                 <ListItemIcon>
                   <RemoveCircle />
                 </ListItemIcon>
@@ -401,6 +402,8 @@ export default function Dashboard() {
             <Route path="/device/all" element={<Device />} />
             <Route path="/device/add" element={<DeviceAdd />} />
             <Route path="/device/upd" element={<DeviceUpd />} />
+            <Route path="/device/del" element={<DeviceDel />} />
+            <Route path="/loadingpage/t0" element={<Message text="Running" delay="5" />} />
             <Route path="/loadingpage/t10" element={<Message text="Loading data" delay="10" />} />
             <Route path="/loadingpage/t90" element={<Message text="Scanning Network" delay="90" />} />
             <Route path="/test" element={<Test />} />

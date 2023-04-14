@@ -470,6 +470,8 @@ export const addShellyDevice = async (obj) => {
 export const updDeviceById = async (id,obj) => {
   const col = await getDeviceCurrentDataCollection();
   obj.updatedAt = new Date();
+  delete obj.password
+  delete obj.mqttPassword
   await col.updateOne({ _id: new ObjectId(id) }, { $set: obj });
   
   // provision
@@ -511,6 +513,8 @@ export const delDeviceById = async (id,obj) => {
   const col = await getDeviceCurrentDataCollection();
   obj.deletedAt = new Date();
   obj.displayData = 2
+  delete obj.password
+  delete obj.mqttPassword
   await col.updateOne({ _id: new ObjectId(id) }, { $set: obj });
   
   // provision

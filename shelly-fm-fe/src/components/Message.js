@@ -11,10 +11,11 @@ function Message({ text, delay }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-      // window.history.back()
+      
       delay > 60
       ? navigate("/loadingpage/t10")
       : navigate("/device/all")
+
     }, delay * 1000);
 
     return () => {
