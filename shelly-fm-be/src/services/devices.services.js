@@ -396,7 +396,10 @@ export const addShellyDevice = async (obj) => {
         try {
           const col = await getDeviceCurrentDataCollection();
           const doc = await col.findOneAndUpdate(   //add new or update previous
-            {ip: obj.ip},
+            {$and: [
+              {ip: obj.ip}, 
+              {displayData : {$ne : 2}}
+            ]},
             { $set: {
                 key: keyTimeStamp.getTime(),
                 year: today.year,
@@ -449,7 +452,10 @@ export const addShellyDevice = async (obj) => {
       // if the docInfo.ip is in the database then we couldn't connect to it so, we set displayData = 1
       const col = await getDeviceCurrentDataCollection();
       const doc = await col.findOneAndUpdate(   //update previous
-          {ip: obj.ip},
+          {$and: [
+            {ip: obj.ip}, 
+            {displayData : {$ne : 2}}
+          ]},
           { $set: {      
             displayData : 1,
             }
@@ -504,7 +510,7 @@ export const updDeviceById = async (id,obj) => {
 export const delDeviceById = async (id,obj) => {
   const col = await getDeviceCurrentDataCollection();
   obj.deletedAt = new Date();
-  obj.displayData = 1
+  obj.displayData = 2
   await col.updateOne({ _id: new ObjectId(id) }, { $set: obj });
   
   // provision
