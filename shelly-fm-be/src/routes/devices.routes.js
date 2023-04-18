@@ -2,7 +2,6 @@ import { Router } from "express";
 import { addDiscoveredDevices, delDeviceById, getConnectedDevices, getDeviceById, patchConnectedDevices, refreshDevicesData, updDeviceById,  } from "../services/devices.services.js";
 
 export const devices = Router();
-let a = 0
 
 // check the network for new devices and add them to the database
 devices.get("/list/reload", async (req, res) => {
@@ -32,10 +31,7 @@ devices.get("/device/:id", async (req, res) => {
 
 devices.post("/device/add", async (req, res) => {
     console.log("Provisioning...")
-    const data = await addDiscoveredDevices(
-        req.body.ssid,req.body.pass,req.body.prefix,
-        req.body.mqttServer,res.body.mqttPassword
-        )
+    const data = await addDiscoveredDevices(req.body)
     res.send(data)
 })
 

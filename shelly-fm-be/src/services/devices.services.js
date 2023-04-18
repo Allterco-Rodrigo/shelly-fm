@@ -487,19 +487,23 @@ export const updDeviceById = async (id,obj) => {
   else {
     if(obj.mqttServer !== "")
       if(obj.deviceGen === 1){
-          command = `http://${obj.deviceIp}/settings?mqtt_server=${obj.mqttServer}&mqtt_pass=${obj.mqttPassword}&mqtt_enable=true`
+        obj.mqttPassword !== ''
+          ? command = `http://${obj.deviceIp}/settings?mqtt_server=${obj.mqttServer}&mqtt_pass=${obj.mqttPassword}&mqtt_enable=true`
+          : command = `http://${obj.deviceIp}/settings?mqtt_server=${obj.mqttServer}&mqtt_enable=true`
       } else {
-          command = `http://${obj.deviceIp}/rpc/MQTT.SetConfig?config={"server":"${obj.mqttServer}","pass":"${obj.mqttPassword}","enable":true}` 
+        obj.mqttPassword !== ''
+          ? command = `http://${obj.deviceIp}/rpc/MQTT.SetConfig?config={"server":"${obj.mqttServer}","pass":"${obj.mqttPassword}","enable":true}` 
+          : command = `http://${obj.deviceIp}/rpc/MQTT.SetConfig?config={"server":"${obj.mqttServer}","enable":true}` 
       }
-      else {
-        if(obj.deviceName !== "")
-          if(obj.deviceGen === 1){
-              command = `http://${obj.deviceIp}/settings/?name=${obj.deviceName}`
-          } else {
-              command = `http://${obj.deviceIp}/rpc/Sys.SetConfig?config={"device":{"name":"${obj.deviceName}"}}` 
-          }
-        
-      }
+    else {
+      if(obj.deviceName !== "")
+        if(obj.deviceGen === 1){
+            command = `http://${obj.deviceIp}/settings/?name=${obj.deviceName}`
+        } else {
+            command = `http://${obj.deviceIp}/rpc/Sys.SetConfig?config={"device":{"name":"${obj.deviceName}"}}` 
+        }
+      
+    }
   }
   try {
       // console.log(command)
@@ -638,8 +642,8 @@ export async function checkForUpdate(ip) {
 }
 
 // provisioning
-export const addDiscoveredDevices = async (ssid,pass,prefix,mqttServer,mqttPassword) => {  
-  const x = provisionDevice(ssid,pass,prefix,mqttServer,mqttPassword)
+export const addDiscoveredDevices = async (obj) => {  
+  const x = provisionDevice(obj)
   return x
 }
 

@@ -6,7 +6,7 @@ export const complex = Router();
 complex.post("/complex/add", async (req, res) => {
     try {
       const id = await complexAdd(req.body);
-      res.status(200).send(id);
+      res.send(id);
     } catch (err) {
       res.status(400).send(err);
     }
@@ -14,20 +14,20 @@ complex.post("/complex/add", async (req, res) => {
 
 complex.get("/complex/all", async (req, res) => {
   const obj = await getComplex();
-  res.status(200).send(obj);
+  res.send(obj);
 });
 
 complex.get("/complex/:id", async (req, res) => {
     const obj = await getComplexById(req.params, req.body);
-    res.status(200).send(obj);
+    res.send(obj);
 });
 
 complex.patch("/complex/upd/:id", async (req, res) => {
     const obj = await complexUpd(req.params, req.body);
-    res.status(200).send(obj);
+    res.send(obj);
 });
 
 complex.patch("/complex/del/:id", async (req, res) => {
     const obj = await complexDel(req.params, req.body);
-    res.status(200).send(obj);
+    res.send(obj);
 });

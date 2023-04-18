@@ -36,7 +36,6 @@ function execPromise(command) {
 
 async function list_available_ssids_promise() {
     console.log('Searching for Shelly Devices in the Network...');
-
     try {
         const stdout = await execPromise('nmcli device wifi list');
         SSID_LIST = stdout.split('\n');
@@ -45,13 +44,13 @@ async function list_available_ssids_promise() {
         console.error(`Error executing command: ${err.message}`);
         return;
     }
-}
+    }
 
 async function provision_device_recursive(index) {
     let cntErr = 0
     if (!SHELLY_DEVICE.length > 0) {
-        console.log('\nNo Device Device Found.');
-        return 1;
+        console.log('\nNo Device Device Found.\n',SSID_LIST);
+        return {"cnt": 0,"cntErr":cntErr};
     }
 
     if (index >= SHELLY_DEVICE.length) {
@@ -68,25 +67,23 @@ async function provision_device_recursive(index) {
     return provision_device_recursive(index + 1);
 }
 
-export async function provisionDevice(ssid,pass,prefix,mqttServer,mqttPassword) {
+export async function provisionDevice(obj) {
     SHELLY_DEVICE = [];
 
-    CONFIG_SSID = ssid
-    CONFIG_PASS = pass
-    CONFIG_PREFIX = prefix
-    CONFIG_MQTT_SERVER = mqttServer
-    CONFIG_MQTT_PASS = mqttPassword
-
-
+    CONFIG_SSID = obj.ssid
+    CONFIG_PASS = obj.pass
+    CONFIG_PREFIX = obj.prefix
+    CONFIG_MQTT_SERVER = obj.mqttServer
+    CONFIG_MQTT_PASS = obj.mqttPassword
     await list_available_ssids_promise();
 
+
     SSID_LIST.forEach(element => {
-        const ssid = element.slice(27,56)
-        if(ssid.toLowerCase().includes(CONFIG_PREFIX.toLowerCase())){
-            SHELLY_DEVICE.push(ssid.trim())
+        if(element.includes(CONFIG_PREFIX.toLowerCase())){
+            console.log(element.trim().toLowerCase())
+            SHELLY_DEVICE.push(element.trim().toLowerCase())
         }      
     })
-
     await delay(6000);
 
     const result = await provision_device_recursive(0);

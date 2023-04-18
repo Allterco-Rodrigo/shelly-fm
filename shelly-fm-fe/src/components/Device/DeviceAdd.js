@@ -9,8 +9,8 @@ const { Content } = Layout;
 
 export default function DeviceAdd() {  
   const navigate = useNavigate();
-  const [cnt, setCnt] = useState(0);
-  const [cntErr, setCntErr] = useState(0);
+  // const [cnt, setCnt] = useState(0);
+  // const [cntErr, setCntErr] = useState(0);
   const [show, setShow] = useState(false);
 
   const [prefix, setPrefix] = useState('shelly');
@@ -22,7 +22,8 @@ export default function DeviceAdd() {
 
   async function handleClick() {
     setShow(!show)
-    addDiscoveredDevices(ssid,password,prefix,mqttServer,mqttPassword)
+    let obj = {"ssid":ssid,"password":password,"prefix":prefix,"mqttServer":mqttServer,"mqttPassword":mqttPassword}
+    addDiscoveredDevices(obj)
     navigate("/loadingpage/t0")
       // .then((success)=>{
       //   if(success){
@@ -94,14 +95,14 @@ export default function DeviceAdd() {
           <Button variant="contained" color="primary" onClick={handleClick}>
             Search and provision devices
           </Button>
-          {
+          {/* {
             show
             ?
               (cnt < 1)
               ? (<Title level={4}><Space size={"large"}>Searching for Shelly devices<Spin /></Space></Title>)
               : (<Title level={4}>{cnt} Device(s) provisioned<br/>{cntErr} Device(s) not provisioned</Title>)
             : ("")
-          }          
+          }           */}
         </Space>
     </Content>
   </Layout>

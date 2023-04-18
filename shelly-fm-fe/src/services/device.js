@@ -22,8 +22,8 @@ export const getDeviceById = async (id) => {
   return data
 };
 
-export const addDiscoveredDevices = async (ssid,pass,prefix,mqttServer,mqttPassword) => {
-  const data = await client.post("/device/add",{"ssid":ssid,"pass":pass,"prefix":prefix,"mqttServer":mqttServer,"mqttPassword":mqttPassword});
+export const addDiscoveredDevices = async (obj) =>{
+  const data = await client.post("/device/add",obj)
   return data
 }
 
