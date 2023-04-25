@@ -203,7 +203,7 @@ export const addShellyDevice = async (obj) => {
             
             if(outputConsumption[0]>0 || outputConsumption[1]>0 || outputConsumption[2]>0 || outputConsumption[3]>0){
               totalConsumption[0] = outputConsumption[0]+outputConsumption[1]+outputConsumption[2]+outputConsumption[3]
-              powerTotalConsumption = meterTotalConsumption[0]+meterTotalConsumption[1]+meterTotalConsumption[2]+meterTotalConsumption[3]
+              powerTotalConsumption = (meterTotalConsumption[0]+meterTotalConsumption[1]+meterTotalConsumption[2]+meterTotalConsumption[3])/1000
             }
             // console.log("totalConsumption[0]",totalConsumption[0],"powerTotalConsumption",powerTotalConsumption)
           }
@@ -645,16 +645,4 @@ export async function checkForUpdate(ip) {
 export const addDiscoveredDevices = async (obj) => {  
   const x = provisionDevice(obj)
   return x
-}
-
-
-// MQTT functions
-
-export async function subscribeToAllDevices () {
-  // get all devices from DB
-  // get the mqttServer 
-  // get the mqttClientId
-  // subscribe to topics
-  
-
 }

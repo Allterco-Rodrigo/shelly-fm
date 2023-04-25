@@ -10,6 +10,7 @@
 
 
 import fetch from 'node-fetch';
+import wifi from 'node-wifi';
 import { exec } from 'child_process'
 import { delay } from './supportFunctions.js';
 
@@ -18,6 +19,10 @@ import { delay } from './supportFunctions.js';
 let SSID_LIST = [];
 let SHELLY_DEVICE = [];
 let CONFIG_PASS, CONFIG_SSID, CONFIG_PREFIX, CONFIG_MQTT_SERVER, CONFIG_MQTT_PASS
+
+wifi.init({
+    iface: null // use the first available network interface
+  });
 
 // ----------------------------------------------------------------------------------- CHAT GPT \/
 
@@ -35,16 +40,27 @@ function execPromise(command) {
 }
 
 async function list_available_ssids_promise() {
-    console.log('Searching for Shelly Devices in the Network...');
-    try {
-        const stdout = await execPromise('nmcli device wifi list');
-        SSID_LIST = stdout.split('\n');
+    // console.log('Searching for Shelly Devices in the Network...');
+    // try {
+    //     const stdout = await execPromise('nmcli device wifi list');
+    //     SSID_LIST = stdout.split('\n');
 
-    } catch (err) {
-        console.error(`Error executing command: ${err.message}`);
-        return;
-    }
-    }
+    // } catch (err) {
+    //     console.error(`Error executing command: ${err.message}`);
+    //     return;
+    // }
+    // }
+
+
+    try {
+        const networks = await wifi.scan();
+        SSID_LIST = networks.map(network => network.ssid);
+      } catch (error) {
+        console.log(error);
+      }
+      
+
+}
 
 async function provision_device_recursive(index) {
     let cntErr = 0
