@@ -33,6 +33,7 @@ import Message from './Message';
 import Test from './Test';
 import DeviceUpd from './Device/DeviceUpd';
 import DeviceDel from './Device/DeviceDel';
+import MqttStatus from './Mqtt/MqttStatus';
 
 const drawerWidth = 220;
 const copy = "Copyright© by Allterco Robotics - " + new Date().getFullYear();
@@ -84,6 +85,9 @@ export default function Dashboard() {
   };
   const handleClickDevicesDelete = () => {
     navigate("/device/del")
+  };
+  const handleClickMqtt = () => {
+    navigate("/mqtt/status")
   };
 
   // Refresh data from already connected devices
@@ -153,9 +157,9 @@ export default function Dashboard() {
             </ListItemIcon>
             <ListItemText primary="Overview" />
           </ListItemButton>  
-        </List>      
+        </List>
         {/* complexes */}
-        <List
+        {/* <List
           sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
           component="nav"
           aria-labelledby="nested-list-subheader"
@@ -189,9 +193,9 @@ export default function Dashboard() {
               </ListItemButton>
             </List>
           </Collapse>
-        </List>
+        </List> */}
         {/* buildings */}
-        <List
+        {/* <List
           sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
           component="nav"
           aria-labelledby="nested-list-subheader"
@@ -225,9 +229,9 @@ export default function Dashboard() {
               </ListItemButton>
             </List>
           </Collapse>
-        </List>
+        </List> */}
         {/* floors */}
-        <List
+        {/* <List
           sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
           component="nav"
           aria-labelledby="nested-list-subheader"
@@ -261,9 +265,9 @@ export default function Dashboard() {
               </ListItemButton>
             </List>
           </Collapse>
-        </List>
+        </List> */}
         {/* units */}
-        <List
+        {/* <List
           sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
           component="nav"
           aria-labelledby="nested-list-subheader"
@@ -297,9 +301,9 @@ export default function Dashboard() {
               </ListItemButton>
             </List>
           </Collapse>
-        </List>
+        </List> */}
         {/* rooms */}
-        <List
+        {/* <List
           sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
           component="nav"
           aria-labelledby="nested-list-subheader"
@@ -333,7 +337,7 @@ export default function Dashboard() {
               </ListItemButton>
             </List>
           </Collapse>
-        </List>
+        </List> */}
         {/* devices */}
         <List
           sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
@@ -349,12 +353,12 @@ export default function Dashboard() {
           </ListItemButton>
           <Collapse in={open6} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }} onClick={handleClickDevicesCreate}>
+              {/* <ListItemButton sx={{ pl: 4 }} onClick={handleClickDevicesCreate}>
                 <ListItemIcon>
                   <AddCircleIcon />
                 </ListItemIcon>
                 <ListItemText primary="Add manually (Provision)" />
-              </ListItemButton>
+              </ListItemButton> */}
               <ListItemButton sx={{ pl: 4 }} onClick={handleClickDevicesUpdate}>
                 <ListItemIcon>
                   <ChangeCircle />
@@ -373,7 +377,7 @@ export default function Dashboard() {
                 </ListItemIcon>
                 <ListItemText primary="Scan for newly added devices" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}  onClick={refreshData}>
+              <ListItemButton sx={{ pl: 4 }} onClick={refreshData}>
                 <ListItemIcon>
                   <AnalyticsOutlined />
                 </ListItemIcon>
@@ -382,7 +386,18 @@ export default function Dashboard() {
             </List>
           </Collapse>
         </List>
-
+        {/* MQTT */}
+        <List
+          sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+          component="nav"
+        >
+          <ListItemButton onClick={handleClickMqtt}>
+            <ListItemIcon>
+              <RouterOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Mqtt" />
+          </ListItemButton>  
+        </List>
       </Drawer>
       {/* FOOTER */}
       <Box
@@ -393,16 +408,21 @@ export default function Dashboard() {
         <Routes>
             <Route path="/" element={<Overview />} />
 
-            <Route path="/complex/all" element={<Complex />} />
+            {/* <Route path="/complex/all" element={<Complex />} />
             <Route path="/complex/add" element={<ComplexAdd />} />
             <Route path="/building/all" element={<Building />} />
             <Route path="/floor/all" element={<Floor />} />
             <Route path="/unit/all" element={<Unit />} />
-            <Route path="/room/all" element={<Room />} />
+            <Route path="/room/all" element={<Room />} /> */}
+            
             <Route path="/device/all" element={<Device />} />
-            <Route path="/device/add" element={<DeviceAdd />} />
+            {/* <Route path="/device/add" element={<DeviceAdd />} /> */}
             <Route path="/device/upd" element={<DeviceUpd />} />
             <Route path="/device/del" element={<DeviceDel />} />
+
+            <Route path="/mqtt/status" element={<MqttStatus />} />
+
+            {/* SUPPORT ROUTES */}
             <Route path="/loadingpage/t0" element={<Message text="Running" delay="5" />} />
             <Route path="/loadingpage/t10" element={<Message text="Loading data" delay="10" />} />
             <Route path="/loadingpage/t90" element={<Message text="Scanning Network" delay="90" />} />

@@ -14,9 +14,11 @@ services:
   api:
     image: api
     build: ./shelly-fm-be/
+    privileged: true
     restart: unless-stopped
     ports:
       - "5050:5050"
+      - "1883:1883"
     networks:
       - fm-app
     depends_on:
@@ -24,6 +26,7 @@ services:
     volumes:
       - ./shelly-fm-be/:/usr/src/app
       - /usr/src/app/node_modules
+      - /var/run/dbus:/var/run/dbus
 # frontend
   web:
     image: web

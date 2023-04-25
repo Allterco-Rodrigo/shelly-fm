@@ -501,6 +501,8 @@ export default function Device() {
                         aenergy2:record.aenergy2,
                         aenergy3:record.aenergy3,
 
+                        totalEnergy:record.totalEnergy,
+
                         switch0:record.switch0,
                         switch1:record.switch1,
                         switch2:record.switch2,

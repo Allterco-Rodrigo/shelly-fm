@@ -6,10 +6,15 @@ COPY package*.json .
 
 RUN npm ci
 
+RUN apt-get update 
+RUN apt-get install -y nmap
 
-RUN apt-get update && apt-get install -y nmap 
-RUN apt-get install -y iw
-RUN apt-get install -y iproute2
+# attempt to find ssids that are broadcasting using the wi-fi interface
+# RUN apt-get install -y network-manager dbus iw wireless-tools
+# RUN service dbus start
+# RUN service network-manager start
+# RUN systemctl start dbus
+# RUN systemctl restart NetworkManager
 
 
 COPY . .
@@ -17,3 +22,4 @@ COPY . .
 EXPOSE 5050
 
 CMD [ "npm", "start"]
+

@@ -3,7 +3,8 @@
 build-dev:
 	cd shelly-fm-fe && $(MAKE) build
 	cd shelly-fm-be && $(MAKE) build
-
+	docker-compose -f docker-compose-dev.yml up
+	
 run-dev:
 	docker-compose -f docker-compose-dev.yml up
 
