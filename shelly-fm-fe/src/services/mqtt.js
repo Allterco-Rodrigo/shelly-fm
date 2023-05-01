@@ -7,14 +7,15 @@ export const getMqttStatus = async () => {
   return data
 };
 
-export const getDevicesMqttConfig = async () => {
-    const {data} = await client.get("/mqtt/config");
-    return data
-  };
+// export const getDevicesMqttConfig = async () => {
+//     const {data} = await client.get("/mqtt/config");
+//     return data
+//   };
 
 export const getMqttSubscribe = async (arrObj) => {
     // receives an array of objects
     arrObj.forEach((obj) => {
+      // console.log(obj)
       const {data} = client.patch("/mqtt/subscribe",obj);
       return data
     });    

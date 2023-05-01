@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { getMqttConfig, getMqttStatus, mqttSub } from "../services/mqtt.services.js";
+import { mqttPub, mqttSubAuto, mqttSubMsg } from "../services/mqtt.services.js";
+import { getMqttStatus } from "../gateway/connectDB.js";
 
 export const mqtt = Router();
 
@@ -9,14 +10,16 @@ mqtt.get("/mqtt/status", async (req, res) => {
     res.send(data)
 })
 
-mqtt.get("/mqtt/config", async (req, res) => {
-    console.log("Getting MQTT ID to subscribe to. Please wait.")
-    const data = await getMqttConfig()
-    res.send(data)
-})
-
 mqtt.patch("/mqtt/subscribe", async (req, res) => {
-    console.log("Subscribing to Topic. Please wait.")
-    const data = await mqttSub(req.body)
+    // console.log("Subscribing to Topic. Please wait.", req.body)
+    let data
+    const dataSub = await mqttSubAuto(req.body)
+    if(req.body.pubTopic[0] !== []){
+        const dataMsg = await mqttSubMsg(req.body)
+        const dataPub = await mqttPub(req.body)
+        data = {"dataSub":dataSub,"dataPub":dataPub,"dataMsg":dataMsg}
+    } else {
+        data = {"dataSub":dataSub}
+    }
     res.send(data)
 })

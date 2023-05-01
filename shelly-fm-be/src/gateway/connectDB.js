@@ -55,3 +55,51 @@ export const getDeviceGetConfigCollection = async () => {
   const db = await getDb();
   return db.collection("devicesGetConfig");
 };
+
+export const mqttMsgToMongo = async (obj) => {
+  const client = new MongoClient(MONGO_DEV); //localhost - DEVELOPMENT
+  await client.connect();
+  const db = client.db("shelly-dcc");
+  const col = db.collection("devicesMqttData");   
+
+  for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+          // console.log(key, obj[key])
+          const doc = await col.findOneAndUpdate(   //update previous
+              { ip: obj.ip },
+              { $set: { [key] : obj[key] }},
+              { upsert: true, returnOriginal: false }
+          )
+      }
+  }
+  // return doc
+  client.close()
+}
+
+export const getMqttStatus = async () => {
+  const db = await getDb();
+  const col = db.collection("devicesMqttData");   
+
+  let retData
+  setInterval(function() {
+      retData = col
+      .aggregate(
+          [
+              {
+                  '$project': {
+                  'ip': '$ip',
+                  'switch0':'$switch0',
+                  'totalEnergy': '$totalEnergy',
+                  }
+            }
+          ]
+      ).toArray(
+          function(err, data) {
+              if (err) throw err;            
+              console.log('Retrieved data:', data);
+          });
+  }, 60000); // retrieve data every minute
+
+
+  return retData
+}
