@@ -1,3 +1,6 @@
+export const MONGO_PRD = "mongodb://mongo_local:27017"; // docker container where mongo is running
+export const MONGO_DEV = "mongodb://127.0.0.1:27017";
+
 // define where the server running nodejs is
 export const BE_IP = 'localhost'
 export const PORT = 5050;
@@ -12,4 +15,4 @@ export const NMAP_OPTIONS = '-n -sn -T5 --max-rtt-timeout 1s --min-parallelism 1
 
 // MQTT server
 export const BROKER_IP = '192.168.15.226:2022'     //LINUX MACHINE
-// export const BROKER_IP = '192.168.0.179:2022'    //WINDOWS MACHINE
+// export const BROKER_IP = '192.168.1.146:2022'    //WINDOWS MACHINE
