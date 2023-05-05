@@ -1,15 +1,15 @@
-import { Col, Layout, Row, Space, Typography } from "antd";
 import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { getMqttStatus, getMqttSubscribe } from "../../services/mqtt.js";
 import { getConnectedDevices } from "../../services/device.js";
+import { Button, Table, Col, Layout, Row, Space, Typography } from "antd";
+
 
 const { Title } = Typography;
 const { Content } = Layout;
 
 export default function MqttStatus() {
-  const [mqttStatus, setMqttStatus] = useState(false);
+  const [mqttData, setMqttData] = useState([]);
+  const [mqttColumns, setMqttColumns] = useState([]);
 
   // subscribe to devices with MQTT server set
   function handleSubscribe () {
@@ -20,7 +20,7 @@ export default function MqttStatus() {
           if(dev.mqttServer !== null){
             let sTopic = [], pTopic = [], pMsg = []
             const mqttClientPrefix = dev.mqttClientId.toString()
-
+            const deviceName = mqttClientPrefix.split("-",1)[0]
             if(dev.gen === 1){
               
               const mqttCmdPrefix = "shellies/" + dev.mqttClientId.toString()
@@ -28,7 +28,7 @@ export default function MqttStatus() {
               sTopic.push(mqttCmdPrefix + "/info")
               sTopic.push(mqttCmdPrefix + "/online")
               
-              switch (mqttClientPrefix.split("-",1)[0]) {
+              switch (deviceName) {
                 // shelly1
                 case 'shelly1':
                   sTopic.push(mqttCmdPrefix + "/relay/0/power");
@@ -243,7 +243,7 @@ export default function MqttStatus() {
                   sTopic.push(mqttCmdPrefix + "/relay/0");
                   break;
                 default:
-                  console.log("Error Case",mqttClientPrefix.split("-",1)[0]);
+                  console.log("Error Case",deviceName);
               }
 
             } else {
@@ -253,6 +253,7 @@ export default function MqttStatus() {
             }
             arrObj.push({
               "ip":dev.ip, 
+              "deviceName":deviceName,
               "server":dev.mqttServer, 
               "subTopic":sTopic, 
               "pubTopic":pTopic, 
@@ -264,49 +265,98 @@ export default function MqttStatus() {
         return arrObj
       })
       .then(arr => {
+        console.log(arr)
         getMqttSubscribe(arr)
       })
       .catch((err)=>{
         console.log("Error Subscribing to Topic",err)
       })
     };
-// 
+  // 
+
   // return data from database
   useEffect(() => {
     const fetchMqttStatusData = async () => {
-      console.log("Returned Data")
       const res = await getMqttStatus()
-      setMqttStatus(JSON.stringify(res))
+      setMqttData(res)
+
+      // code when all the keys are the same
+      // for (let i = 0; i < res.length; i++) {
+      //   const columns = Object.keys(res[i]).map(key => ({
+      //     title: key.toUpperCase(),
+      //     dataIndex: key,
+      //   }));
+      //   setMqttColumns(columns)
+      // }
+
+      // code when the keys are different
+      // Get an array of all the keys present in all the objects
+      // const allKeys = res.reduce((prev, curr) => {
+      //   return [...prev, ...Object.keys(curr)];
+      // }, []);
+      // const uniqueKeys = [...new Set(allKeys)];
+
+      // // Generate columns for the unique keys
+      // const columns = uniqueKeys.map(key => ({
+      //   title: key.toUpperCase(),
+      //   dataIndex: key,
+      // }));
+
+      // setMqttColumns(columns)
+
     }
+    
     fetchMqttStatusData()
   },[]);
 
-  // const handleChange = async (value) => {
-  //   const data = await getDeviceById(value)
-  //   setDeviceId(value)
-  //   setDeviceIp(data.ip)
-  //   setDeviceGen(data.gen)
-  //   setDeviceName(data.name?data.name:"")
-  //   setWifi(data.wifi?data.wifi:"")
-  //   setMqttServer(data.mqttServer?data.mqttServer:"")
-  //   setValue(value) 
-  //   setShow(true)
-  // };
+
+  // Group objects by their keys
+  const groups = {};
+  mqttData.forEach(obj => {
+    Object.keys(obj).forEach(key => {
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(obj[key]);
+    });
+  });
+
+  // Create a table for each group
+  const tables = Object.keys(groups).map(key => (
+    <div key={key}>
+      <h2>{key}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>{key}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {groups[key].map((value, index) => (
+            <tr key={index}>
+              <td>{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ));
 
   
   return (
     <Layout>
         <Content style={{ margin: "20px 16px" }}>
           <Space direction="vertical">
-            <Typography>{mqttStatus}</Typography>
             <Row>
-              <Space>
-                <Col>
-                  <Button variant="contained" color="primary" onClick={handleSubscribe}>
-                    Renew Subscription
-                  </Button>
-                </Col>              
-              </Space>
+              <Col>
+                {/* <Table columns={mqttColumns} dataSource={mqttData} /> */}
+                {tables}
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Button variant="contained" color="primary" onClick={handleSubscribe}>
+                  Renew Subscription
+                </Button>
+              </Col>
             </Row>
           </Space>
       </Content>

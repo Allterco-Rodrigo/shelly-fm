@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { MONGO_PRD, MONGO_DEV } from "../secrets.js";
+import { MONGO_PRD, MONGO_DEV } from "../config.js";
 
 export const getDb = async () => {
   // const client = new MongoClient(MONGO_PRD); //docker
@@ -57,8 +57,6 @@ export const getDeviceGetConfigCollection = async () => {
 };
 
 export const mqttMsgToMongo = async (obj) => {
-  const client = new MongoClient(MONGO_DEV); //localhost - DEVELOPMENT
-  await client.connect();
   const db = client.db("shelly-dcc");
   const col = db.collection("devicesMqttData");   
 
@@ -81,25 +79,20 @@ export const getMqttStatus = async () => {
   const col = db.collection("devicesMqttData");   
 
   let retData
-  setInterval(function() {
       retData = col
-      .aggregate(
-          [
-              {
-                  '$project': {
-                  'ip': '$ip',
-                  'switch0':'$switch0',
-                  'totalEnergy': '$totalEnergy',
-                  }
-            }
-          ]
-      ).toArray(
-          function(err, data) {
-              if (err) throw err;            
-              console.log('Retrieved data:', data);
-          });
-  }, 60000); // retrieve data every minute
-
+      .find()
+      // .aggregate(
+      //     [
+      //         {
+      //             '$project': {
+      //               _id:0,
+      //               'ip': '$ip',
+      //             }
+      //       }
+      //     ]
+      // )
+      .toArray();
 
   return retData
 }
+

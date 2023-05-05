@@ -16,7 +16,7 @@ export const mqttPub = async (obj) => {
                   }, i * delay);
                 
                 // client.publish(obj.pubTopic[i], obj.pubMsg[i], {qos: 1})
-                // console.log("PUB",obj.pubTopic[i], obj.pubMsg[i], {qos: 1})
+                console.log("PUB",obj.pubTopic[i], obj.pubMsg[i], {qos: 1})
             }
         } else {
             console.error('problem connecting')
@@ -46,7 +46,7 @@ export const mqttSubMsg = async (obj) => {
     
     client.on('message',async (topic, data) => {
         const dataObj = JSON.parse(data.toString()).result
-        const mongoObj = { "ip" : obj.ip }
+        const mongoObj = { "ip" : obj.ip, "deviceName" : obj.deviceName }
 
         let i = 0
 
@@ -170,7 +170,7 @@ export const mqttSubAuto = async (obj) => {
     
     client.on('message',async (topic, data) => {
         // console.log("MSG AUT",data.toString())
-        const mongoObj = { "ip" : obj.ip }
+        const mongoObj = { "ip" : obj.ip, "deviceName" : obj.deviceName }
         // need to store data from different relays/inputs in an array
         
         if(topic.includes("/events/rpc")){

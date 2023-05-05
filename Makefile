@@ -2,9 +2,11 @@
 
 build-dev:
 	cd shelly-fm-fe && $(MAKE) build
+	cp src/generic_secrets.js src/secrets.js
 	cd shelly-fm-be && $(MAKE) build
 	docker-compose -f docker-compose-dev.yml up
-	
+
+
 run-dev:
 	docker-compose -f docker-compose-dev.yml up
 
@@ -26,6 +28,3 @@ run-dev:
 
 # run-production:
 # 	ENV=production docker-compose -f docker-compose-production.yml up
-	
-stop:
-	docker-compose down

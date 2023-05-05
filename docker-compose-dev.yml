@@ -1,15 +1,15 @@
 version: "3.9"
 services:
 # database
-  mongodb:
-    image: mongo:latest
+  mongo_local:
+    image: mongo:4.4.6
     restart: always
     ports:
-      - "27027:27017"
+      - "27017:27017"
     networks:
       - fm-app
     volumes:
-      - mongodb:/data/db
+      - mongo_local:/data/db
 # backend
   api:
     image: api
@@ -18,11 +18,11 @@ services:
     restart: unless-stopped
     ports:
       - "5050:5050"
-      - "1883:1883"
+      - "2022:2022"
     networks:
       - fm-app
     depends_on:
-      - mongodb
+      - mongo_local
     volumes:
       - ./shelly-fm-be/:/usr/src/app
       - /usr/src/app/node_modules
@@ -48,5 +48,5 @@ networks:
     driver: bridge
 
 volumes:
-  mongodb:
+  mongo_local:
     driver: local
