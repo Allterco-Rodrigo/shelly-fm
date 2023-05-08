@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { currentTotalEnergyData, totalEnergyMonth  } from "../services/overview.services.js";
-import { getTestMongo } from "../gateway/connectDB.js";
+// import { getTestMongo } from "../gateway/connectDB.js";
 
 export const overview = Router();
 
@@ -15,7 +15,7 @@ overview.get("/overview/totalenergymonth", async (req, res) => {
     res.send(data)
 })
 
-overview.get("/test", async (req, res) => {
-    const data = await getTestMongo()
-    res.send(data)
-})
+// overview.get("/test", async (req, res) => {
+//     const data = await getTestMongo()
+//     res.send(data)
+// })
