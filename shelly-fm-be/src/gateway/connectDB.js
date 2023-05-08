@@ -71,7 +71,6 @@ export const mqttMsgToMongo = async (obj) => {
       }
   }
   // return doc
-  client.close()
 }
 
 export const getMqttStatus = async () => {
