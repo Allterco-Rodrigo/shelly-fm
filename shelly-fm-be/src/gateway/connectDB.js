@@ -11,15 +11,15 @@ const client = new MongoClient(MONGO_DEV); //localhost - DEVELOPMENT
 
 };
 
-export const getTestMongo = async () => {
-  const db = await getDb();
-  const cursor = db.listCollections();
-  const res = cursor.forEach((collection) => {
-    console.log(collection.name);
-  })
+// export const getTestMongo = async () => {
+//   const db = await getDb();
+//   const cursor = db.listCollections();
+//   const res = cursor.forEach((collection) => {
+//     console.log(collection.name);
+//   })
   
-  return "connected"
-}
+//   return "connected"
+// }
 
 export const getDeviceCurrentDataCollection = async () => {
   const db = await getDb();
@@ -57,7 +57,7 @@ export const getDeviceGetConfigCollection = async () => {
 };
 
 export const mqttMsgToMongo = async (obj) => {
-  const db = client.db("shelly-dcc");
+  const db = await getDb();
   const col = db.collection("devicesMqttData");   
 
   for (const key in obj) {
