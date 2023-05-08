@@ -15,8 +15,8 @@ export const mqttPub = async (obj) => {
                     }, delay);
                   }, i * delay);
                 
-                // client.publish(obj.pubTopic[i], obj.pubMsg[i], {qos: 1})
-                console.log("PUB",obj.pubTopic[i], obj.pubMsg[i], {qos: 1})
+                client.publish(obj.pubTopic[i], obj.pubMsg[i], {qos: 1})
+                // console.log("PUB",obj.pubTopic[i], obj.pubMsg[i])
             }
         } else {
             console.error('problem connecting')
@@ -46,6 +46,9 @@ export const mqttSubMsg = async (obj) => {
     
     client.on('message',async (topic, data) => {
         const dataObj = JSON.parse(data.toString()).result
+
+        // console.log("SUB",dataObj)
+
         const mongoObj = { "ip" : obj.ip, "deviceName" : obj.deviceName }
 
         let i = 0
@@ -72,7 +75,7 @@ export const mqttSubMsg = async (obj) => {
 
             mongoObj.sysMac = dataObj.sys.mac
 
-            // console.log(mongoObj)    
+            // console.log(mongoObj)
             mqttMsgToMongo(mongoObj);
         }
 
@@ -129,6 +132,7 @@ export const mqttSubMsg = async (obj) => {
             mongoObj.total_aprt_power = dataObj[`em:${i}`].total_aprt_power
             mongoObj.total_current = dataObj[`em:${i}`].total_current
             mongoObj.sysMac = dataObj.sys.mac
+            
             // console.log(mongoObj)
             mqttMsgToMongo(mongoObj);
         }
@@ -136,15 +140,15 @@ export const mqttSubMsg = async (obj) => {
 // PUB shellypro3em-ec6260890b50/rpc {"id":1, "src":"shellypro3em-ec6260890b50-GetStatus", "method":"Shelly.GetStatus"} { qos: 1 }
 // MSG RPC {"id":1,"src":"shellypro3em-ec6260890b50","dst":"shellypro3em-ec6260890b50-GetStatus",
 // "result":{"ble":{},"cloud":{"connected":true},
-    // "em:0":{"id":0,"a_current":3.761,"a_voltage":121.7,"a_act_power":342.8,"a_aprt_power":457.5,"a_pf":-0.80,"b_current":8.109,"b_voltage":121.0,"b_act_power":957.3,"b_aprt_power":980.7,"b_pf":-0.98,"c_current":0.025,"c_voltage":121.7,"c_act_power":0.2,"c_aprt_power":3.1,"c_pf":-1.00,"n_current":null,"total_current":11.896,"total_act_power":1300.252,"total_aprt_power":1441.226, "user_calibrated_phase":[]},
-    // "emdata:0":{"id":0,"a_total_act_energy":1075513.08,"a_total_act_ret_energy":0.00,"b_total_act_energy":1776542.72,"b_total_act_ret_energy":0.00,"c_total_act_energy":0.01,"c_total_act_ret_energy":0.00,
-    // "total_act":2852055.81, "total_act_ret":0.00},
-    // "eth":{"ip":null},
-    // "modbus":{},
-    // "mqtt":{"connected":true},
-    // "sys":{"mac":"EC6260890B50","restart_required":false,"time":"10:54","unixtime":1682952865,"uptime":260530,"ram_size":246700,"ram_free":105248,"fs_size":524288,"fs_free":172032,"cfg_rev":15,"kvs_rev":0,"webhook_rev":0,"available_updates":{}},"temperature:0":{"id": 0,"tC":47.0, "tF":116.5},"wifi":{"sta_ip":"192.168.15.68","status":"got ip","ssid":"Romulus","rssi":-52},"ws":{"connected":false}}} shellypro3em-ec6260890b50-GetStatus/rpc
+//     "em:0":{"id":0,"a_current":3.761,"a_voltage":121.7,"a_act_power":342.8,"a_aprt_power":457.5,"a_pf":-0.80,"b_current":8.109,"b_voltage":121.0,"b_act_power":957.3,"b_aprt_power":980.7,"b_pf":-0.98,"c_current":0.025,"c_voltage":121.7,"c_act_power":0.2,"c_aprt_power":3.1,"c_pf":-1.00,"n_current":null,"total_current":11.896,"total_act_power":1300.252,"total_aprt_power":1441.226, "user_calibrated_phase":[]},
+//     "emdata:0":{"id":0,"a_total_act_energy":1075513.08,"a_total_act_ret_energy":0.00,"b_total_act_energy":1776542.72,"b_total_act_ret_energy":0.00,"c_total_act_energy":0.01,"c_total_act_ret_energy":0.00,
+//     "total_act":2852055.81, "total_act_ret":0.00},
+//     "eth":{"ip":null},
+//     "modbus":{},
+//     "mqtt":{"connected":true},
+//     "sys":{"mac":"EC6260890B50","restart_required":false,"time":"10:54","unixtime":1682952865,"uptime":260530,"ram_size":246700,"ram_free":105248,"fs_size":524288,"fs_free":172032,"cfg_rev":15,"kvs_rev":0,"webhook_rev":0,"available_updates":{}},"temperature:0":{"id": 0,"tC":47.0, "tF":116.5},"wifi":{"sta_ip":"192.168.15.68","status":"got ip","ssid":"Romulus","rssi":-52},"ws":{"connected":false}}} shellypro3em-ec6260890b50-GetStatus/rpc
     
-        // console.log("MANU \n",mongoObj, "\n\n")
+        console.log("MANU \n",mongoObj, "\n\n")
     })
     
     client.on('error',function(error){
@@ -221,6 +225,7 @@ export const mqttSubAuto = async (obj) => {
                 mongoObj.total_aprt_power = dataObj.params[`em:${i}`].total_aprt_power
                 mongoObj.total_current = dataObj.params[`em:${i}`].total_current
 
+                // console.log(mongoObj, "\n\n")
                 mqttMsgToMongo(mongoObj);
             }
             
@@ -241,7 +246,8 @@ export const mqttSubAuto = async (obj) => {
 
             if(dataObj.overpower)
                 mongoObj[`overPower${i}`] = dataObj.overpower
-
+            
+            // console.log(mongoObj, "\n\n")
             mqttMsgToMongo(mongoObj);
 
         }
@@ -255,27 +261,28 @@ export const mqttSubAuto = async (obj) => {
             
             if(topic.split("/",5)[5] === "power")
                 mongoObj[`switch${i}`] = dataObj
-                mqttMsgToMongo(mongoObj);
+                // mqttMsgToMongo(mongoObj);
 
             if(topic.includes("energy"))
                 mongoObj[`totalEnergy${i}`] = dataObj
-                mqttMsgToMongo(mongoObj);
+                // mqttMsgToMongo(mongoObj);
 
             if(topic.split("/",3)[3] === "temperature")
                 mongoObj[`temperatureC${i}`] = dataObj
-                mqttMsgToMongo(mongoObj);
+                // mqttMsgToMongo(mongoObj);
 
             if(topic.includes("temperature_f"))
                 mongoObj[`temperatureF${i}`] = dataObj
-                mqttMsgToMongo(mongoObj);
+                // mqttMsgToMongo(mongoObj);
 
             if(topic.includes("loaderror"))
                 mongoObj[`loaderror${i}`] = dataObj
-                mqttMsgToMongo(mongoObj);
+                // mqttMsgToMongo(mongoObj);
 
             if(topic.split("/",4)[4] === undefined)
                 mongoObj[`status${i}`] = dataObj
-                mqttMsgToMongo(mongoObj);
+                
+            mqttMsgToMongo(mongoObj);
             
         }
 

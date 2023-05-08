@@ -13,7 +13,7 @@ export default function Overview() {
         const ret1 = await currentTotalEnergyData()        
         setData(ret1)
       } catch (e) {
-        console.log("Error Overview Fetch 1",e)
+        // console.log("Error Overview Fetch 1",e)
       }
     }
     fetchData();
@@ -25,7 +25,7 @@ export default function Overview() {
         const ret2 = await totalEnergyMonth()        
         setPastData(ret2)
       } catch (e) {
-        console.log("Error Overview Fetch 2",e)
+        // console.log("Error Overview Fetch 2",e)
       }
     }
     fetchData();

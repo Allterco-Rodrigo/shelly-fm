@@ -11,15 +11,15 @@ import ListItemText from '@mui/material/ListItemText';
 
 import Overview from './Overview';
 import Device from './Device/Device';
-import Complex from "./Location/Complexes/Complex";
-import Building from "./Location/Buildings/Building";
-import Floor from "./Location/Floors/Floor";
-import Unit from "./Location/Units/Unit";
-import Room from "./Location/Rooms/Room";
+// import Complex from "./Location/Complexes/Complex";
+// import Building from "./Location/Buildings/Building";
+// import Floor from "./Location/Floors/Floor";
+// import Unit from "./Location/Units/Unit";
+// import Room from "./Location/Rooms/Room";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import ComplexAdd from './Location/Complexes/ComplexAdd';
+// import ComplexAdd from './Location/Complexes/ComplexAdd';
 
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+// import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { 
   AnalyticsOutlined, ChangeCircle, ExpandLess,
   ExpandMore, HolidayVillage, HomeWorkOutlined,
@@ -28,12 +28,13 @@ import {
   ZoomInOutlined } from '@mui/icons-material';
 import { Collapse, ListItemIcon } from '@mui/material';
 import { refreshDevicesData, patchConnectedDevices } from '../services/device';
-import DeviceAdd from './Device/DeviceAdd';
+// import DeviceAdd from './Device/DeviceAdd';
 import Message from './Message';
 import Test from './Test';
 import DeviceUpd from './Device/DeviceUpd';
 import DeviceDel from './Device/DeviceDel';
 import MqttStatus from './Mqtt/MqttStatus';
+import { REFRESH_TIME } from '../config';
 
 const drawerWidth = 220;
 const copy = "Copyright© by Allterco Robotics - " + new Date().getFullYear();
@@ -42,43 +43,43 @@ const copy = "Copyright© by Allterco Robotics - " + new Date().getFullYear();
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  const [open1, setOpen1] = useState(false);
-  const [open2, setOpen2] = useState(false);
-  const [open3, setOpen3] = useState(false);
-  const [open4, setOpen4] = useState(false);
-  const [open5, setOpen5] = useState(false);
+  // const [open1, setOpen1] = useState(false);
+  // const [open2, setOpen2] = useState(false);
+  // const [open3, setOpen3] = useState(false);
+  // const [open4, setOpen4] = useState(false);
+  // const [open5, setOpen5] = useState(false);
   const [open6, setOpen6] = useState(false);
 
 
   const handleClickOverview = () => {
     navigate("/")
   };
-  const handleClickComplexes = () => {
-    setOpen1(!open1);
-    navigate("/complex/all")
-  };
-  const handleClickBuildings = () => {
-    setOpen2(!open2);
-    navigate("/building/all")
-  };
-  const handleClickFloors = () => {
-    setOpen3(!open3);
-    navigate("/floor/all")
-  };
-  const handleClickUnits = () => {
-    setOpen4(!open4);
-    navigate("/unit/all")
-  };
-  const handleClickRooms = () => {
-    setOpen5(!open5);
-    navigate("/room/all")
-  };
+  // const handleClickComplexes = () => {
+  //   setOpen1(!open1);
+  //   navigate("/complex/all")
+  // };
+  // const handleClickBuildings = () => {
+  //   setOpen2(!open2);
+  //   navigate("/building/all")
+  // };
+  // const handleClickFloors = () => {
+  //   setOpen3(!open3);
+  //   navigate("/floor/all")
+  // };
+  // const handleClickUnits = () => {
+  //   setOpen4(!open4);
+  //   navigate("/unit/all")
+  // };
+  // const handleClickRooms = () => {
+  //   setOpen5(!open5);
+  //   navigate("/room/all")
+  // };
+  // const handleClickDevicesCreate = () => {
+  //   navigate("/device/add")
+  // };
   const handleClickDevices = () => {
     setOpen6(!open6);
     navigate("/device/all")
-  };
-  const handleClickDevicesCreate = () => {
-    navigate("/device/add")
   };
   const handleClickDevicesUpdate = () => {
     navigate("/device/upd")
@@ -110,9 +111,9 @@ export default function Dashboard() {
   async function reloadDevices () {
     // console.log("Refreshing list of connected devices...")
     const ret = patchConnectedDevices()
-    .then(()=>{
-      navigate("/loadingpage/t90")
-    })
+      .then(()=>{
+        navigate("/loadingpage/t90")
+      })
     return ret
   };
 
@@ -425,7 +426,7 @@ export default function Dashboard() {
             {/* SUPPORT ROUTES */}
             <Route path="/loadingpage/t0" element={<Message text="Running" delay="5" />} />
             <Route path="/loadingpage/t10" element={<Message text="Loading data" delay="10" />} />
-            <Route path="/loadingpage/t90" element={<Message text="Scanning Network" delay="90" />} />
+            <Route path="/loadingpage/t90" element={<Message text="Scanning Network" delay={REFRESH_TIME} />} />
             <Route path="/test" element={<Test />} />
 
         </Routes>

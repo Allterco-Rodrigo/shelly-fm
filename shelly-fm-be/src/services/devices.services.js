@@ -107,7 +107,7 @@ export const addShellyDevice = async (obj) => {
         addShellyDevice(device)      
     });
     if(i===obj.length){
-      console.log(obj.length,'device(s) found')
+      // console.log(obj.length,'device(s) found')
       return obj.length
     }
   } else {
@@ -121,6 +121,7 @@ export const addShellyDevice = async (obj) => {
     
     // If docInfo.error exists then that IP address does not belong to a Shelly device 
     // or the shelly device is not connected 
+    // console.log(docInfo)
     if(!docInfo.error){  
       // console.log ("Connecting to device", obj.ip)
       let keyTimeStamp = new Date();
@@ -532,7 +533,7 @@ export const delDeviceById = async (id,obj) => {
     }
 
   try {
-      console.log(command)
+      // console.log(command)
       const x = await fetch(command)
   } catch (error) {
       console.error("ERROR \n\n",error)

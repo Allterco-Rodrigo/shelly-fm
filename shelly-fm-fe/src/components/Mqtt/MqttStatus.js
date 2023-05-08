@@ -16,7 +16,7 @@ export default function MqttStatus() {
       getConnectedDevices()
       .then(devices => {
         let arrObj = []
-        const x = devices.map((dev) => {
+        devices.map((dev) => {
           if(dev.mqttServer !== null){
             let sTopic = [], pTopic = [], pMsg = []
             const mqttClientPrefix = dev.mqttClientId.toString()
@@ -265,7 +265,7 @@ export default function MqttStatus() {
         return arrObj
       })
       .then(arr => {
-        console.log(arr)
+        // console.log(arr)
         getMqttSubscribe(arr)
       })
       .catch((err)=>{

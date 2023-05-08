@@ -39,7 +39,7 @@ export default function Device() {
         })
 
     } catch (error) {
-      console.log("BE Disconnected")        
+      console.log("BE Disconnected")
       console.log(error)
     }
   }
