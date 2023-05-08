@@ -148,7 +148,7 @@ export const mqttSubMsg = async (obj) => {
 //     "mqtt":{"connected":true},
 //     "sys":{"mac":"EC6260890B50","restart_required":false,"time":"10:54","unixtime":1682952865,"uptime":260530,"ram_size":246700,"ram_free":105248,"fs_size":524288,"fs_free":172032,"cfg_rev":15,"kvs_rev":0,"webhook_rev":0,"available_updates":{}},"temperature:0":{"id": 0,"tC":47.0, "tF":116.5},"wifi":{"sta_ip":"192.168.15.68","status":"got ip","ssid":"Romulus","rssi":-52},"ws":{"connected":false}}} shellypro3em-ec6260890b50-GetStatus/rpc
     
-        console.log("MANU \n",mongoObj, "\n\n")
+        // console.log("MANU \n",mongoObj, "\n\n")
     })
     
     client.on('error',function(error){
