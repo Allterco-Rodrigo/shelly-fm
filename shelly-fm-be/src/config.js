@@ -1,5 +1,5 @@
-export const MONGO_PRD = "mongodb://mongo_local:27017"; // docker container where mongo is running
-export const MONGO_DEV = "mongodb://127.0.0.1:27017";
+// export const MONGO = "mongodb://mongo_local:27017"; // running with docker container 
+export const MONGO = "mongodb://127.0.0.1:27017";   // running without docker
 
 // define where the server running nodejs is
 export const BE_IP = 'localhost'

@@ -1,9 +1,8 @@
 import { MongoClient } from "mongodb";
-import { MONGO_PRD, MONGO_DEV } from "../config.js";
+import { MONGO } from "../config.js";
 
 export const getDb = async () => {
-  const client = new MongoClient(MONGO_PRD); //docker
-// const client = new MongoClient(MONGO_DEV); //localhost - DEVELOPMENT
+  const client = new MongoClient(MONGO);
 
   await client.connect();
   return client.db("shelly-dcc");
