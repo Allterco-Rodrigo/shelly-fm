@@ -9,16 +9,6 @@ export const getDb = async () => {
 
 };
 
-// export const getTestMongo = async () => {
-//   const db = await getDb();
-//   const cursor = db.listCollections();
-//   const res = cursor.forEach((collection) => {
-//     console.log(collection.name);
-//   })
-  
-//   return "connected"
-// }
-
 export const getDeviceCurrentDataCollection = async () => {
   const db = await getDb();
   return db.collection("devicesCurrentData");
@@ -54,42 +44,13 @@ export const getDeviceGetConfigCollection = async () => {
   return db.collection("devicesGetConfig");
 };
 
-export const mqttMsgToMongo = async (obj) => {
+export const getDevicesMqttDataCollection = async () => {
   const db = await getDb();
-  const col = db.collection("devicesMqttData");   
-
-  for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-          // console.log(key, obj[key])
-          const doc = await col.findOneAndUpdate(   //update previous
-              { ip: obj.ip },
-              { $set: { [key] : obj[key] }},
-              { upsert: true, returnOriginal: false }
-          )
-      }
-  }
-  // return doc
+  return db.collection("devicesMqttData");   
 }
 
 export const getMqttStatus = async () => {
   const db = await getDb();
-  const col = db.collection("devicesMqttData");   
-
-  let retData
-      retData = col
-      .find()
-      // .aggregate(
-      //     [
-      //         {
-      //             '$project': {
-      //               _id:0,
-      //               'ip': '$ip',
-      //             }
-      //       }
-      //     ]
-      // )
-      .toArray();
-
-  return retData
+  return db.collection("devicesMqttData");   
 }
 

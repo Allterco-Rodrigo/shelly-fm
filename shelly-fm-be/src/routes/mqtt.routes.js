@@ -1,12 +1,11 @@
 import { Router } from "express";
-import { mqttPub, mqttSubAuto, mqttSubMsg } from "../services/mqtt.services.js";
-import { getMqttStatus } from "../gateway/connectDB.js";
+import { getMqttData, mqttPub, mqttSubAuto, mqttSubMsg } from "../services/mqtt.services.js";
 
 export const mqtt = Router();
 
 mqtt.get("/mqtt/status", async (req, res) => {
-    console.log("Getting status of all devices publishing ")
-    const data = await getMqttStatus()
+    // console.log("Getting status of all devices publishing ")
+    const data = await getMqttData()
     res.send(data)
 })
 

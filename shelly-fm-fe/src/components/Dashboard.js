@@ -22,9 +22,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 // import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { 
   AnalyticsOutlined, ChangeCircle, ExpandLess,
-  ExpandMore, HolidayVillage, HomeWorkOutlined,
-  LanguageOutlined, LayersOutlined, MeetingRoomOutlined,
-  RemoveCircle, RouterOutlined, ViewQuiltOutlined,
+  ExpandMore, LanguageOutlined, RemoveCircle, RouterOutlined,
   ZoomInOutlined } from '@mui/icons-material';
 import { Collapse, ListItemIcon } from '@mui/material';
 import { refreshDevicesData, patchConnectedDevices } from '../services/device';

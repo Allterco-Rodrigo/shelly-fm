@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getMqttStatus, getMqttSubscribe } from "../../services/mqtt.js";
 import { getConnectedDevices } from "../../services/device.js";
-import { Button, Table, Col, Layout, Row, Space, Typography } from "antd";
+import { Button, Card, Col, Layout, Row, Space, Typography } from "antd";
 
-
-const { Title } = Typography;
 const { Content } = Layout;
+const { Title } = Typography;
 
 export default function MqttStatus() {
   const [mqttData, setMqttData] = useState([]);
-  const [mqttColumns, setMqttColumns] = useState([]);
+  const [dataRender, setDataRender] = useState([]);
 
   // subscribe to devices with MQTT server set
   function handleSubscribe () {
@@ -265,7 +264,7 @@ export default function MqttStatus() {
         return arrObj
       })
       .then(arr => {
-        // console.log(arr)
+        console.log(arr)
         getMqttSubscribe(arr)
       })
       .catch((err)=>{
@@ -279,83 +278,69 @@ export default function MqttStatus() {
     const fetchMqttStatusData = async () => {
       const res = await getMqttStatus()
       setMqttData(res)
-
-      // code when all the keys are the same
-      // for (let i = 0; i < res.length; i++) {
-      //   const columns = Object.keys(res[i]).map(key => ({
-      //     title: key.toUpperCase(),
-      //     dataIndex: key,
-      //   }));
-      //   setMqttColumns(columns)
-      // }
-
-      // code when the keys are different
-      // Get an array of all the keys present in all the objects
-      // const allKeys = res.reduce((prev, curr) => {
-      //   return [...prev, ...Object.keys(curr)];
-      // }, []);
-      // const uniqueKeys = [...new Set(allKeys)];
-
-      // // Generate columns for the unique keys
-      // const columns = uniqueKeys.map(key => ({
-      //   title: key.toUpperCase(),
-      //   dataIndex: key,
-      // }));
-
-      // setMqttColumns(columns)
-
     }
-    
     fetchMqttStatusData()
   },[]);
 
+  const DataDisplay = ({ data }) => {
+    return (
+      <Row gutter={[16, 16]}>
+        {data.map(item =>
+          item.totalEnergy0 && (
+            (
+            <Col span={8} key={item._id}>
+              <Card
+                key={item._id}
+                title={<><p>IP:&emsp;{item.ip} </p><p>Device Name:&emsp;{item.deviceName}</p></>}
+                style={{ marginBottom: '16px' }}
+              >
+                { item.relay0               ? <><p><strong>Relay 0:</strong>&emsp;{item.relay0}</p>                         </>: <></> }
+                { item.power0               ? <><p><strong>Power 0:</strong>&emsp;{item.power0}</p>                         </>: <></> }
+                { item.totalEnergy0         ? <><p><strong>Total Energy 0:</strong>&emsp;{item.totalEnergy0}</p>            </>: <></> }
+                { item.relay1               ? <><p><strong>Relay1:</strong>&emsp;{item.relay1}</p>                          </>: <></> }
+                { item.input0               ? <><p><strong>Input0:</strong>&emsp;{item.input0}</p>                          </>: <></> }
+                { item.input1               ? <><p><strong>Input1:</strong>&emsp;{item.input1}</p>                          </>: <></> }
+                { item.temperatureC0        ? <><p><strong>Temperature C:</strong>&emsp;{item.temperatureC0}</p>            </>: <></> }
+                { item.overtemperature0     ? <><p><strong>Overtemperature:</strong>&emsp;{item.overtemperature0}</p>       </>: <></> }
+                { item.temperature_status0  ? <><p><strong>Temperature Status:</strong>&emsp;{item.temperature_status0}</p> </>: <></> }
+                { item.voltage0             ? <><p><strong>Voltage:</strong>&emsp;{item.voltage0}</p>                       </>: <></> }
+              </Card>
+            </Col>
+            )
+          )
+        )}
+      </Row>
+    );
+  };
 
-  // Group objects by their keys
-  const groups = {};
-  mqttData.forEach(obj => {
-    Object.keys(obj).forEach(key => {
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(obj[key]);
-    });
-  });
+  const refreshData = () => {
+    window.location.reload();
+  };
 
-  // Create a table for each group
-  const tables = Object.keys(groups).map(key => (
-    <div key={key}>
-      <h2>{key}</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>{key}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {groups[key].map((value, index) => (
-            <tr key={index}>
-              <td>{value}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  ));
-
-  
   return (
     <Layout>
-        <Content style={{ margin: "20px 16px" }}>
+        <Content style={{ margin: "16px 16px" }}>
           <Space direction="vertical">
-            <Row>
+            <Row align="top">
               <Col>
-                {/* <Table columns={mqttColumns} dataSource={mqttData} /> */}
-                {tables}
+                <Space direction="horizontal" size={16} >
+                  <Button type="primary" size="large" onClick={handleSubscribe} style={{ width: 200 }}>
+                    Renew Subscription
+                  </Button>
+                  <Button type="primary" size="large" onClick={refreshData} style={{ width: 200 }}>
+                    Refresh Data
+                  </Button>
+                </Space>
+              </Col>
+            </Row>
+            <Row justify="center" align="top" style={{ background: 'white' }}>
+              <Col>
+                <Title level={3}>MQTT Data</Title>
               </Col>
             </Row>
             <Row>
               <Col>
-                <Button variant="contained" color="primary" onClick={handleSubscribe}>
-                  Renew Subscription
-                </Button>
+                <DataDisplay data={mqttData} />
               </Col>
             </Row>
           </Space>

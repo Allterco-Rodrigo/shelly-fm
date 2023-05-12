@@ -1,11 +1,12 @@
 import * as mqtt from "mqtt"
-import { mqttMsgToMongo } from '../gateway/connectDB.js';
+import { getDevicesMqttDataCollection } from '../gateway/connectDB.js';
 
 export const mqttPub = async (obj) => {
     const delay = 60000; // 1 minute(s) in milliseconds
     const client = mqtt.connect(`mqtt://${obj.server}`)
 
     client.on('connect', () => {
+        console.log('Connecting to MQTT Server...')
         if(client.connected){
             for(let i = 0; i < obj.pubMsg.length; i++){
                 setTimeout(() => {
@@ -33,6 +34,8 @@ export const mqttSubMsg = async (obj) => {
 
     const client = mqtt.connect(`mqtt://${obj.server}`)
 
+    const mongoObj = { "ip" : obj.ip, "deviceName" : obj.deviceName}
+
     client.on('connect', () => {
         if(client.connected){
             for(let i = 0; i < obj.pubMsg.length; i++){
@@ -48,8 +51,6 @@ export const mqttSubMsg = async (obj) => {
         const dataObj = JSON.parse(data.toString()).result
 
         // console.log("SUB",dataObj)
-
-        const mongoObj = { "ip" : obj.ip, "deviceName" : obj.deviceName }
 
         let i = 0
 
@@ -75,8 +76,8 @@ export const mqttSubMsg = async (obj) => {
 
             mongoObj.sysMac = dataObj.sys.mac
 
-            // console.log(mongoObj)
-            mqttMsgToMongo(mongoObj);
+            console.log(mongoObj)
+            saveMqttData(mongoObj);
         }
 
 // PUB shellyplugus-083af2018c80/rpc {"id":1, "src":"shellyplugus-083af2018c80-GetStatus", "method":"Shelly.GetStatus"} { qos: 1 }
@@ -134,7 +135,7 @@ export const mqttSubMsg = async (obj) => {
             mongoObj.sysMac = dataObj.sys.mac
             
             // console.log(mongoObj)
-            mqttMsgToMongo(mongoObj);
+            saveMqttData(mongoObj);
         }
       
 // PUB shellypro3em-ec6260890b50/rpc {"id":1, "src":"shellypro3em-ec6260890b50-GetStatus", "method":"Shelly.GetStatus"} { qos: 1 }
@@ -160,6 +161,7 @@ export const mqttSubMsg = async (obj) => {
 export const mqttSubAuto = async (obj) => {
 
     const client = mqtt.connect(`mqtt://${obj.server}`)
+    const mongoObj = { "ip" : obj.ip, "deviceName" : obj.deviceName}
 
     client.on('connect', () => {
         if(client.connected){
@@ -174,7 +176,6 @@ export const mqttSubAuto = async (obj) => {
     
     client.on('message',async (topic, data) => {
         // console.log("MSG AUT",data.toString())
-        const mongoObj = { "ip" : obj.ip, "deviceName" : obj.deviceName }
         // need to store data from different relays/inputs in an array
         
         if(topic.includes("/events/rpc")){
@@ -200,7 +201,7 @@ export const mqttSubAuto = async (obj) => {
                 }
  
                 // console.log(mongoObj, "\n\n")
-                mqttMsgToMongo(mongoObj);
+                saveMqttData(mongoObj);
                 
             }
             
@@ -226,66 +227,93 @@ export const mqttSubAuto = async (obj) => {
                 mongoObj.total_current = dataObj.params[`em:${i}`].total_current
 
                 // console.log(mongoObj, "\n\n")
-                mqttMsgToMongo(mongoObj);
+                saveMqttData(mongoObj);
             }
             
-            // console.log("MSG AUTO 1", obj.ip, "\n", dataObj, "\n", topic, "\n")
+            console.log("MSG AUTO 1", obj.ip, "\n", dataObj, "\n", topic, "\n")
             
         }
 
         if(topic.includes("0\/status")){
             const dataObj = data.toString()
-            // console.log("MSG AUTO 2", obj.ip, "\n", dataObj, "\n", topic, "\n")
-
+            
             let i = 0
             if(typeof topic.split("/",4)[4] == 'number')
-                i = topic.split("/",4)[4]
-
+            i = topic.split("/",4)[4]
+            
             if(dataObj.power)
                 mongoObj[`switch${i}`] = dataObj.power
-
-            if(dataObj.overpower)
+                
+                if(dataObj.overpower)
                 mongoObj[`overPower${i}`] = dataObj.overpower
-            
-            // console.log(mongoObj, "\n\n")
-            mqttMsgToMongo(mongoObj);
-
+                
+                // console.log(mongoObj, "\n\n")
+                saveMqttData(mongoObj);
+                
+                console.log("MSG AUTO 2", obj.ip, "\n", dataObj, "\n", topic, "\n")
         }
 
         if (!topic.includes("/events/rpc") && !topic.includes("0\/status")){
-            const dataObj = data.toString()
-            // console.log("MSG AUTO 3", obj.ip, "\n", dataObj, "\n", topic, "\n")
             let i = 0
-            if(typeof topic.split("/",4)[4] == 'number')
-                i = topic.split("/",4)[4]
+            const dataObj = data.toString()
+            // console.log(dataObj, topic, topic.split("/",5))
+
+            if(topic.split("/",3)[2] === "relay"){
+                // console.log("relay data")
+                if(typeof parseInt(topic.split("/",4)[3]) == 'number' && topic.split("/",5)[4] === undefined ){
+                    i = topic.split("/",4)[3]
+                    mongoObj[`relay${i}`] = dataObj
+                }
+
+                if(topic.split("/",5)[4] === "power")
+                    mongoObj[`power${i}`] = dataObj
+                
+                if(topic.split("/",5)[4] === "energy")
+                    mongoObj[`totalEnergy${i}`] = dataObj
             
-            if(topic.split("/",5)[5] === "power")
-                mongoObj[`switch${i}`] = dataObj
-                // mqttMsgToMongo(mongoObj);
+            }
 
-            if(topic.includes("energy"))
-                mongoObj[`totalEnergy${i}`] = dataObj
-                // mqttMsgToMongo(mongoObj);
 
-            if(topic.split("/",3)[3] === "temperature")
+            if(topic.split("/",3)[2] === "input"){
+                // console.log("input data")
+                if(typeof parseInt(topic.split("/",4)[3]) == 'number' && topic.split("/",5)[4] === undefined ){
+
+                    i = topic.split("/",4)[3]
+                    mongoObj[`input${i}`] = dataObj
+
+                }
+            }
+
+
+            if(topic.split("/",3)[2] === "temperature")
                 mongoObj[`temperatureC${i}`] = dataObj
-                // mqttMsgToMongo(mongoObj);
+            
+            if(topic.split("/",3)[2] === "overtemperature")
+                mongoObj[`overtemperature${i}`] = dataObj
+            
+            if(topic.split("/",3)[2] === "temperature_status")
+                mongoObj[`temperature_status${i}`] = dataObj
 
+            if(topic.split("/",3)[2] === "voltage")
+                mongoObj[`voltage${i}`] = dataObj
+
+                
             if(topic.includes("temperature_f"))
                 mongoObj[`temperatureF${i}`] = dataObj
-                // mqttMsgToMongo(mongoObj);
-
+                
             if(topic.includes("loaderror"))
                 mongoObj[`loaderror${i}`] = dataObj
-                // mqttMsgToMongo(mongoObj);
-
-            if(topic.split("/",4)[4] === undefined)
-                mongoObj[`status${i}`] = dataObj
-                
-            mqttMsgToMongo(mongoObj);
             
+            // if(topic.split("/",4)[4] === undefined)
+            //     mongoObj[`status${i}`] = dataObj
+       
+        
+            // console.log(mongoObj, "\n\n")
+            saveMqttData(mongoObj);
+            
+            // console.log("MSG AUTO 3", obj.ip, "\n", dataObj, "\n", topic, "\n")
         }
-
+            
         // console.log("AUTO \n",mongoObj, "\n\n")
 
     })
@@ -294,4 +322,30 @@ export const mqttSubAuto = async (obj) => {
         console.log("Can't connect" + error);
     });        
     
+}
+
+async function saveMqttData (obj) {
+    const col = await getDevicesMqttDataCollection()
+    console.log(obj)
+
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            // console.log(key, obj[key])
+            const doc = await col.findOneAndUpdate(   //update previous
+                { ip: obj.ip, deviceName : obj.deviceName},
+                { $set: { [key] : obj[key] }},
+                { upsert: true, returnOriginal: false }
+            )
+        }
+    }
+
+}
+
+export const getMqttData = async () => {
+    const col = await getDevicesMqttDataCollection()
+    const retData = col
+        .find()
+        .toArray();
+
+    return retData
 }
