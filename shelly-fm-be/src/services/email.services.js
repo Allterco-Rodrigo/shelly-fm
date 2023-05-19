@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import { EMAIL_CREDENTIALS } from "../secrets.js";
 
 
-export const sendStatusNotification = async (obj) => {
+export const sendEmailNotification = async (obj) => {
 
     const transporter = nodemailer.createTransport({
         service : EMAIL_CREDENTIALS.EMAIL_SERVICE,
@@ -12,27 +12,12 @@ export const sendStatusNotification = async (obj) => {
         }
     });
 
-    let htmlCode
-    (obj.trackingNumber)
-    ? htmlCode = `<p>The status from your order of a <strong>${obj.productName}</strong> 
-                  is currently <strong>${obj.orderStatus}</strong></p>
-                  <p>Your tracking number is: <strong>${obj.trackingNumber}</strong></p>
-                  <br/>
-                  <h3>For more information about your order:</h3>
-                  <p>Email <a href="mailto:support@shelly.cloud">support@shelly.cloud</a></p>
-                  <p>Call 1-833-743-5591 Monday to Friday from 9am to 5pm</p>
-                  `
-    : htmlCode = `<p>The status from your order of a <strong>${obj.productName}</strong> 
-                  is currently <strong>${obj.orderStatus}</strong></p>
-                  <br/>
-                  <h3>For more information about your order:</h3>
-                  <p>Email <a href="mailto:support@shelly.cloud">support@shelly.cloud</a></p>
-                  <p>Call 1-833-743-5591 Monday to Friday from 9am to 5pm</p>`
+    let htmlCode = `<p>The device ${obj.deviceName} had a change of status`
 
     const message = {
         from: EMAIL_CREDENTIALS.EMAIL_FROM,
-        to: obj.customerEmail,
-        subject: 'Shelly Sample Request System - Order Status',
+        to: obj.mailRecipient,
+        subject: 'Shelly Control Center - Device Status Change',
         html: htmlCode
       };
 

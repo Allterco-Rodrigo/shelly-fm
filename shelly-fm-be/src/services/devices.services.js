@@ -1,4 +1,4 @@
-import { getDeviceCurrentDataCollection, getDeviceHistoricDataCollection } from "../gateway/connectDB.js";
+import { getDeviceCurrentDataCollection, getDeviceHistoricDataCollection, getDeviceMessageTriggersCollection } from "../gateway/connectDB.js";
 import { scanConnectedDevicesToDb } from "../nmapScan.js";
 import fetch from "node-fetch";
 import { presentDate, yesterday } from "../supportFunctions.js";
@@ -140,6 +140,7 @@ export const addShellyDevice = async (obj) => {
       let mqtt = false;
       let mqtt_server = "N/A";
       let mqtt_client_id = "";
+      let mqtt_prefix = "";
       let gen = -1;
       let deviceType = "Switch";  
 
@@ -176,7 +177,7 @@ export const addShellyDevice = async (obj) => {
         mqtt = docConfig.gen1.mqtt.enable           // false,
         mqtt_server = docConfig.gen1.mqtt.server    // '192.168.33.3:1883',
         mqtt_client_id = docConfig.gen1.mqtt.id     // 'shellyswitch25-E8DB84A259B3',
-
+        mqtt_prefix = mqtt_client_id.split("-",1)[0]
         wifi = docInfo.gen1.wifi_sta.ssid         // 'FAMHQ',
         wifiStatus = 0
         
@@ -257,6 +258,7 @@ export const addShellyDevice = async (obj) => {
         mqtt_server = docConfig.gen2.mqtt.server    // '192.168.33.3:1883',
 
         mqtt_client_id = docInfo.gen2.id                  // 'shellyplugus-083af201c63c',
+        mqtt_prefix = mqtt_client_id.split("-",1)[0]
 
         if(!docInfo.gen2.name){  // name === null then user didn't name the device
           deviceName.push('Shelly ' + docInfo.gen2.app)   // 'Shelly PlugUS'
@@ -420,6 +422,7 @@ export const addShellyDevice = async (obj) => {
                 mqtt : mqtt,
                 mqttServer: mqtt_server,
                 mqttClientId: mqtt_client_id,
+                mqttPrefix: mqtt_prefix,
                 totalEnergy: powerTotalConsumption,
                 amp0 : currentAmp[0],
                 amp1 : currentAmp[1],
@@ -540,7 +543,6 @@ export const delDeviceById = async (id,obj) => {
   }
 }
 
-
 // getting information from the device
 export async function getDeviceInfo(ip) {
   
@@ -647,3 +649,44 @@ export const addDiscoveredDevices = async (obj) => {
   const x = provisionDevice(obj)
   return x
 }
+
+// Triggers for messages
+export const addDeviceTriggers = async (obj) => {
+  // console.log(obj)
+
+  const col = await getDeviceMessageTriggersCollection();
+  const doc = await col.findOneAndUpdate(   //update previous
+      {$and: [
+        {ip: obj.ip},
+      ]},
+      { $set: {
+        id: new ObjectId(obj.id),
+        notificationMedia: obj.notificationMedia,
+        email: obj.email,
+        phone: obj.phone,
+        interval: obj.interval,
+        limits: obj.limits
+        }
+      },
+      { upsert: true, returnOriginal: true }
+  );  
+
+}
+
+export const getDeviceTriggers = async (obj) => {
+  // console.log(obj)
+
+  const col = await getDeviceMessageTriggersCollection();
+  const doc = await col.find({interval: obj.interval}).toArray();  
+  return doc
+
+}
+
+  // the code to check the status will run accordingly to the time set by 
+
+  // save before/after status to DB
+
+  // create new support functions to 
+  // 1 - send sms
+  // 2 - emit sound and show message
+  // 3 - send email 

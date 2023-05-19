@@ -8,8 +8,7 @@ export default function Test() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const ret1 = await getTest()        
-        setData(ret1)
+        setData(await getTest())
       } catch (e) {
         setData(e)
       }

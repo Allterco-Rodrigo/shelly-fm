@@ -76,7 +76,7 @@ export const mqttSubMsg = async (obj) => {
 
             mongoObj.sysMac = dataObj.sys.mac
 
-            console.log(mongoObj)
+            // console.log(mongoObj)
             saveMqttData(mongoObj);
         }
 
@@ -230,7 +230,7 @@ export const mqttSubAuto = async (obj) => {
                 saveMqttData(mongoObj);
             }
             
-            console.log("MSG AUTO 1", obj.ip, "\n", dataObj, "\n", topic, "\n")
+            // console.log("MSG AUTO 1", obj.ip, "\n", dataObj, "\n", topic, "\n")
             
         }
 
@@ -250,7 +250,7 @@ export const mqttSubAuto = async (obj) => {
                 // console.log(mongoObj, "\n\n")
                 saveMqttData(mongoObj);
                 
-                console.log("MSG AUTO 2", obj.ip, "\n", dataObj, "\n", topic, "\n")
+                // console.log("MSG AUTO 2", obj.ip, "\n", dataObj, "\n", topic, "\n")
         }
 
         if (!topic.includes("/events/rpc") && !topic.includes("0\/status")){
@@ -326,8 +326,6 @@ export const mqttSubAuto = async (obj) => {
 
 async function saveMqttData (obj) {
     const col = await getDevicesMqttDataCollection()
-    console.log(obj)
-
     for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
             // console.log(key, obj[key])
@@ -338,14 +336,32 @@ async function saveMqttData (obj) {
             )
         }
     }
-
 }
 
 export const getMqttData = async () => {
+
     const col = await getDevicesMqttDataCollection()
     const retData = col
-        .find()
-        .toArray();
+        // .find()
+        .aggregate([
+            {
+              "$lookup": {
+                "from": "devicesCurrentData",
+                "localField": "ip",
+                "foreignField": "ip",
+                "as": "joinedCol"
+              }
+            }
+          ])
+        .sort({deviceName: 1, ip: 1})
+        .toArray()
 
     return retData
+}
+
+export const delMqttData = async () => {
+    const col = await getDevicesMqttDataCollection()
+    // drop collection - We will not use MQTT stored data
+    const drop = await col.deleteMany()
+    return drop
 }

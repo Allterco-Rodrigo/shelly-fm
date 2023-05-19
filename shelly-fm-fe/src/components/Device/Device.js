@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { UserContext } from "../../App";
 import { Button, Col, Layout, Row, Statistic, Table, Tag, Typography } from "antd";
-import { getConnectedDevices } from "../../services/device.js";
+import { getConnectedDevices, getDeviceById, getDeviceTriggers, refreshDevicesData } from "../../services/device.js";
 import { CircularProgress } from "@mui/material";
 const { Text } = Typography;
 // import { useNavigate } from "react-router-dom";
@@ -16,8 +16,40 @@ export default function Device() {
     setLoadTable(false)
     getList()
     // eslint-disable-next-line
+    monitoring(30)
+    monitoring(60)
+    monitoring(90)
+    monitoring(300)
+    monitoring(600)
+    monitoring(900)
   },[])
 
+
+  const monitoring = (interval) => {
+    setTimeout(() => {
+      checkForChanges(interval)
+      monitoring(interval)
+    }, interval);
+  }
+
+  const checkForChanges = async (interval) => {
+    // refresh the data in DB
+    refreshDevicesData()
+    // return a list of devices that requires update in said interval
+    const devices = getDeviceTriggers(interval)
+    // get most recent data for each device
+    devices.map( (device) => {
+      const data = getDeviceById(device.id)
+      // if the limit value changes
+      if(device.limit.power){
+        if(device.limit.power < data.totalEnergy){
+          // trigger the message mechanism
+          alert("Device Triggered", data.deviceName)
+        }
+      }
+    })
+
+  }
 
   const getList = async () => {
     
@@ -43,18 +75,6 @@ export default function Device() {
       console.log(error)
     }
   }
-
-  // const handleUpdate = (key, updatedField) => {
-  //   console.log("here",key, updatedField)
-  //   setTableData(prevData =>
-  //     prevData.map(item => {
-  //       if (item.key === key) {
-  //         return { ...item, ...updatedField };
-  //       }
-  //       return item;
-  //     })
-  //   );
-  // };
 
   async function handleToggle (httpLink,index) {
     let dev =  ["Switch","2"]

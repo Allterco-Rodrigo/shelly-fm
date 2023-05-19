@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { addDiscoveredDevices, delDeviceById, getConnectedDevices, getDeviceById, patchConnectedDevices, refreshDevicesData, updDeviceById,  } from "../services/devices.services.js";
+import { addDeviceTriggers, addDiscoveredDevices, delDeviceById, getConnectedDevices, 
+    getDeviceById, getDeviceTriggers, patchConnectedDevices, refreshDevicesData, 
+    updDeviceById,  } from "../services/devices.services.js";
 
 export const devices = Router();
 
@@ -32,6 +34,18 @@ devices.get("/device/:id", async (req, res) => {
 devices.post("/device/add", async (req, res) => {
     console.log("Provisioning...")
     const data = await addDiscoveredDevices(req.body)
+    res.send(data)
+})
+
+devices.post("/device/trigger", async (req, res) => {
+    console.log("Setting Triggers...")
+    const data = await addDeviceTriggers(req.body)
+    res.send(data)
+})
+
+devices.get("/device/trigger/:interval", async (req, res) => {
+    console.log("Triggering devices...")
+    const data = await getDeviceTriggers(req.params)
     res.send(data)
 })
 

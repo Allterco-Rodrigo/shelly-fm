@@ -19,4 +19,10 @@ export function presentDate() {
 export function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  
+
+
+// send email
+
+// send sms
+
+// emit sound

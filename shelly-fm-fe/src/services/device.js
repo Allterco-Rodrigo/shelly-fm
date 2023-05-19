@@ -27,6 +27,16 @@ export const addDiscoveredDevices = async (obj) =>{
   return data
 }
 
+export const addDeviceTriggers = async (obj) => {
+  const data = await client.post("/device/trigger",obj);
+  return data
+}
+
+export const getDeviceTriggers = async (interval) => {
+  const data = await client.post(`/device/trigger/${interval}`);
+  return data
+}
+
 export const updDeviceById = async (id,obj) => {
   const data = await client.patch(`/device/upd/${id}`,obj);
   return data

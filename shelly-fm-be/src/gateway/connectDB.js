@@ -14,6 +14,11 @@ export const getDeviceCurrentDataCollection = async () => {
   return db.collection("devicesCurrentData");
 };
 
+export const getDeviceMessageTriggersCollection = async () => {
+  const db = await getDb();
+  return db.collection("devicesMessageTriggers");
+};
+
 export const getDeviceMqttDataCollection = async () => {
   const db = await getDb();
   return db.collection("devicesMqttData");

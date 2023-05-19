@@ -8,7 +8,6 @@ const { Title } = Typography;
 
 export default function MqttStatus() {
   const [mqttData, setMqttData] = useState([]);
-  const [dataRender, setDataRender] = useState([]);
 
   // subscribe to devices with MQTT server set
   function handleSubscribe () {
@@ -264,7 +263,7 @@ export default function MqttStatus() {
         return arrObj
       })
       .then(arr => {
-        console.log(arr)
+        // console.log(arr)
         getMqttSubscribe(arr)
       })
       .catch((err)=>{
@@ -283,27 +282,54 @@ export default function MqttStatus() {
   },[]);
 
   const DataDisplay = ({ data }) => {
+    console.log(data)
     return (
       <Row gutter={[16, 16]}>
         {data.map(item =>
-          item.totalEnergy0 && (
+          (item.totalEnergy0 || item.a_act_power || item.power || item.current) && (
             (
             <Col span={8} key={item._id}>
               <Card
                 key={item._id}
-                title={<><p>IP:&emsp;{item.ip} </p><p>Device Name:&emsp;{item.deviceName}</p></>}
+                title={<><p>Device Name:&emsp;{item.joinedCol[0].name}</p><p>IP:&emsp;{item.ip}</p></>}
                 style={{ marginBottom: '16px' }}
               >
-                { item.relay0               ? <><p><strong>Relay 0:</strong>&emsp;{item.relay0}</p>                         </>: <></> }
-                { item.power0               ? <><p><strong>Power 0:</strong>&emsp;{item.power0}</p>                         </>: <></> }
-                { item.totalEnergy0         ? <><p><strong>Total Energy 0:</strong>&emsp;{item.totalEnergy0}</p>            </>: <></> }
-                { item.relay1               ? <><p><strong>Relay1:</strong>&emsp;{item.relay1}</p>                          </>: <></> }
-                { item.input0               ? <><p><strong>Input0:</strong>&emsp;{item.input0}</p>                          </>: <></> }
-                { item.input1               ? <><p><strong>Input1:</strong>&emsp;{item.input1}</p>                          </>: <></> }
-                { item.temperatureC0        ? <><p><strong>Temperature C:</strong>&emsp;{item.temperatureC0}</p>            </>: <></> }
-                { item.overtemperature0     ? <><p><strong>Overtemperature:</strong>&emsp;{item.overtemperature0}</p>       </>: <></> }
-                { item.temperature_status0  ? <><p><strong>Temperature Status:</strong>&emsp;{item.temperature_status0}</p> </>: <></> }
-                { item.voltage0             ? <><p><strong>Voltage:</strong>&emsp;{item.voltage0}</p>                       </>: <></> }
+
+                { item.sysMac               ? <><p><strong>Mac Address            :</strong>&emsp;{item.sysMac}</p>                       </>: <></> }
+                { item.totalEnergy0         ? <><p><strong>Total Energy           :</strong>&emsp;{item.totalEnergy0.toFixed(2)}</p>      </>: <></> }
+                { item.totalPower0          ? <><p><strong>Total Power            :</strong>&emsp;{item.totalPower0.toFixed(2)}</p>       </>: <></> }
+                { item.power0               ? <><p><strong>Power                  :</strong>&emsp;{item.power0.toFixed(2)}</p>            </>: <></> }
+                { item.relay0               ? <><p><strong>Relay 0                :</strong>&emsp;{item.relay0}</p>                       </>: <></> }
+                { item.relay1               ? <><p><strong>Relay 1                :</strong>&emsp;{item.relay1}</p>                       </>: <></> }
+                { item.input0               ? <><p><strong>Input 0                :</strong>&emsp;{item.input0}</p>                       </>: <></> }
+                { item.input1               ? <><p><strong>Input 1                :</strong>&emsp;{item.input1}</p>                       </>: <></> }
+                { item.switch0              ? <><p><strong>Switch                 :</strong>&emsp;{item.switch0.toFixed(2)}</p>           </>: <></> }
+                { item.aenergy0             ? <><p><strong>Active Energy Counter  :</strong>&emsp;{item.aenergy0.toFixed(2)}</p>          </>: <></> }
+                { item.current0             ? <><p><strong>Current                :</strong>&emsp;{item.current0.toFixed(2)}</p>          </>: <></> }
+                { item.temperatureC0        ? <><p><strong>Temperature C          :</strong>&emsp;{item.temperatureC0}</p>                </>: <></> }
+                { item.overtemperature0     ? <><p><strong>Over Temperature       :</strong>&emsp;{item.overtemperature0}</p>             </>: <></> }
+                { item.temperature_status0  ? <><p><strong>Temperature Status     :</strong>&emsp;{item.temperature_status0}</p>          </>: <></> }
+                { item.voltage0             ? <><p><strong>Voltage                :</strong>&emsp;{item.voltage0.toFixed(2)}</p>          </>: <></> }
+                { item.a_act_power          ? <><p><strong>Phase A Active Power   :</strong>&emsp;{item.a_act_power.toFixed(2)}</p>       </>: <></> }
+                { item.a_aprt_power         ? <><p><strong>Phase A Apparent Power :</strong>&emsp;{item.a_aprt_power.toFixed(2)}</p>      </>: <></> }
+                { item.a_current            ? <><p><strong>Phase A Current        :</strong>&emsp;{item.a_current.toFixed(2)}</p>         </>: <></> }
+                { item.a_pf                 ? <><p><strong>Phase A Power Factor   :</strong>&emsp;{item.a_pf.toFixed(2)}</p>              </>: <></> }
+                { item.a_voltage            ? <><p><strong>Phase A Voltage        :</strong>&emsp;{item.a_voltage.toFixed(2)}</p>         </>: <></> }
+                { item.b_act_power          ? <><p><strong>Phase B Active Power   :</strong>&emsp;{item.b_act_power.toFixed(2)}</p>       </>: <></> }
+                { item.b_aprt_power         ? <><p><strong>Phase B Apparent Power :</strong>&emsp;{item.b_aprt_power.toFixed(2)}</p>      </>: <></> }
+                { item.b_current            ? <><p><strong>Phase B Current        :</strong>&emsp;{item.b_current.toFixed(2)}</p>         </>: <></> }
+                { item.b_pf                 ? <><p><strong>Phase B Power Factor   :</strong>&emsp;{item.b_pf.toFixed(2)}</p>              </>: <></> }
+                { item.b_voltage            ? <><p><strong>Phase B Voltage        :</strong>&emsp;{item.b_voltage.toFixed(2)}</p>         </>: <></> }
+                { item.c_act_power          ? <><p><strong>Phase C Active Power   :</strong>&emsp;{item.c_act_power.toFixed(2)}</p>       </>: <></> }
+                { item.c_aprt_power         ? <><p><strong>Phase C Apparent Power :</strong>&emsp;{item.c_aprt_power.toFixed(2)}</p>      </>: <></> }
+                { item.c_current            ? <><p><strong>Phase C Current        :</strong>&emsp;{item.c_current.toFixed(2)}</p>         </>: <></> }
+                { item.c_pf                 ? <><p><strong>Phase C Power Factor   :</strong>&emsp;{item.c_pf.toFixed(2)}</p>              </>: <></> }
+                { item.c_voltage            ? <><p><strong>Phase C Voltage        :</strong>&emsp;{item.c_voltage.toFixed(2)}</p>         </>: <></> }
+                { item.n_current            ? <><p><strong>Neutral Current        :</strong>&emsp;{item.n_current.toFixed(2)}</p>         </>: <></> }
+                { item.total_act_power      ? <><p><strong>Total Active Power     :</strong>&emsp;{item.total_act_power.toFixed(2)}</p>   </>: <></> }
+                { item.total_aprt_power     ? <><p><strong>Total Apparent Power   :</strong>&emsp;{item.total_aprt_power.toFixed(2)}</p>  </>: <></> }
+                { item.total_current        ? <><p><strong>Total Current          :</strong>&emsp;{item.total_current.toFixed(2)}</p>     </>: <></> }
+
               </Card>
             </Col>
             )
@@ -312,6 +338,10 @@ export default function MqttStatus() {
       </Row>
     );
   };
+
+  // const intervalId = setInterval(() => {
+  //   refreshData()
+  // }, 30000);  
 
   const refreshData = () => {
     window.location.reload();

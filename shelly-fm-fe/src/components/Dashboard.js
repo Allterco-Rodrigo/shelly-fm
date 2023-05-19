@@ -21,6 +21,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 
 // import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { 
+  AlarmOnOutlined,
   AnalyticsOutlined, ChangeCircle, ExpandLess,
   ExpandMore, LanguageOutlined, RemoveCircle, RouterOutlined,
   ZoomInOutlined } from '@mui/icons-material';
@@ -33,6 +34,7 @@ import DeviceUpd from './Device/DeviceUpd';
 import DeviceDel from './Device/DeviceDel';
 import MqttStatus from './Mqtt/MqttStatus';
 import { REFRESH_TIME } from '../config';
+import DeviceTrigger from './Device/DeviceTrigger';
 
 const drawerWidth = 220;
 const copy = "Copyright© by Allterco Robotics - " + new Date().getFullYear();
@@ -84,6 +86,9 @@ export default function Dashboard() {
   };
   const handleClickDevicesDelete = () => {
     navigate("/device/del")
+  };
+  const handleClickDevicesTrigger = () => {
+    navigate("/device/trigger")
   };
   const handleClickMqtt = () => {
     navigate("/mqtt/status")
@@ -352,12 +357,12 @@ export default function Dashboard() {
           </ListItemButton>
           <Collapse in={open6} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {/* <ListItemButton sx={{ pl: 4 }} onClick={handleClickDevicesCreate}>
+              <ListItemButton sx={{ pl: 4 }} onClick={handleClickDevicesTrigger}>
                 <ListItemIcon>
-                  <AddCircleIcon />
+                  <AlarmOnOutlined />
                 </ListItemIcon>
-                <ListItemText primary="Add manually (Provision)" />
-              </ListItemButton> */}
+                <ListItemText primary="Add Triggers (Messages)" />
+              </ListItemButton>
               <ListItemButton sx={{ pl: 4 }} onClick={handleClickDevicesUpdate}>
                 <ListItemIcon>
                   <ChangeCircle />
@@ -418,6 +423,7 @@ export default function Dashboard() {
             {/* <Route path="/device/add" element={<DeviceAdd />} /> */}
             <Route path="/device/upd" element={<DeviceUpd />} />
             <Route path="/device/del" element={<DeviceDel />} />
+            <Route path="/device/trigger" element={<DeviceTrigger />} />
 
             <Route path="/mqtt/status" element={<MqttStatus />} />
 
