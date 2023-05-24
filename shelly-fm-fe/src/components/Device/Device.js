@@ -16,40 +16,40 @@ export default function Device() {
     setLoadTable(false)
     getList()
     // eslint-disable-next-line
-    monitoring(30)
-    monitoring(60)
-    monitoring(90)
-    monitoring(300)
-    monitoring(600)
-    monitoring(900)
+    // monitoring(30)
+    // monitoring(60)
+    // monitoring(90)
+    // monitoring(300)
+    // monitoring(600)
+    // monitoring(900)
   },[])
 
 
-  const monitoring = (interval) => {
-    setTimeout(() => {
-      checkForChanges(interval)
-      monitoring(interval)
-    }, interval);
-  }
+  // const monitoring = (interval) => {
+  //   setTimeout(() => {
+  //     checkForChanges(interval)
+  //     monitoring(interval)
+  //   }, interval);
+  // }
 
-  const checkForChanges = async (interval) => {
-    // refresh the data in DB
-    refreshDevicesData()
-    // return a list of devices that requires update in said interval
-    const devices = getDeviceTriggers(interval)
-    // get most recent data for each device
-    devices.map( (device) => {
-      const data = getDeviceById(device.id)
-      // if the limit value changes
-      if(device.limit.power){
-        if(device.limit.power < data.totalEnergy){
-          // trigger the message mechanism
-          alert("Device Triggered", data.deviceName)
-        }
-      }
-    })
+  // const checkForChanges = async (interval) => {
+  //   // refresh the data in DB
+  //   refreshDevicesData()
+  //   // return a list of devices that requires update in said interval
+  //   const devices = getDeviceTriggers(interval)
+  //   // get most recent data for each device
+  //   devices.map( (device) => {
+  //     const data = getDeviceById(device.id)
+  //     // if the limit value changes
+  //     if(device.limit.power){
+  //       if(device.limit.power < data.totalEnergy){
+  //         // trigger the message mechanism
+  //         alert("Device Triggered", data.deviceName)
+  //       }
+  //     }
+  //   })
 
-  }
+  // }
 
   const getList = async () => {
     
