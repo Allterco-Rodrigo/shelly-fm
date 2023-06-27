@@ -1,8 +1,8 @@
 const gmail = {
   EMAIL_SERVICE: 'gmail',
-  EMAIL_USERNAME: 'shellysamplerequestsystem@gmail.com',
-  EMAIL_PASSWORD: 'mzxdcvhkxxrwowwc', // config authorization for app
-  EMAIL_FROM: 'shellysamplerequestsystem@gmail.com',
+  EMAIL_USERNAME: 'emails@gmail.com',
+  EMAIL_PASSWORD: 'bazinga', // config authorization for app
+  EMAIL_FROM: 'senderm@gmail.com',
 }
 
 export const EMAIL_CREDENTIALS = gmail
