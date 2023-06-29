@@ -135,29 +135,16 @@ function connectToSSID (SSID) {
 
 async function get_gen1_gen2 () {
     console.log("Getting Device's generation")
-    
+    let gen = {}
     try {
-        const x = await fetch(`http://192.168.33.1/settings`)
-        if(x.status === 200){
-            return {"gen":1}
-        }
+        const x = await fetch(`http://192.168.33.1/shelly`)
+        x.gen
+        ? gen = {"gen":2}
+        : gen = {"gen":1}
+        return gen
     } catch (e) {
         console.error(e)
     }
-
-    await delay(1000);
-
-    try {
-        const x = await fetch(`http://192.168.33.1/rpc/Shelly.GetDeviceInfo`)
-        if(x.status === 200){
-            return {"gen":2}
-        }
-     } catch (e) {
-         console.error(e)
-     }
-
-     await delay(1000);
-
      // error
      console.log("Not a shelly device")
      return {"gen":-1}

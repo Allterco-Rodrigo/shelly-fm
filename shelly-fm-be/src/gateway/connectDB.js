@@ -3,11 +3,10 @@ import { MONGO } from "../config.js";
 
 export const getDb = async () => {
   const client = new MongoClient(MONGO);
-
   await client.connect();
   return client.db("shelly-dcc");
-
 };
+
 
 export const getDeviceCurrentDataCollection = async () => {
   const db = await getDb();

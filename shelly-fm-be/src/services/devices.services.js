@@ -7,8 +7,9 @@ import { ObjectId } from "mongodb";
 
 let done = true
 
+// call NMAP to scan the network and add shelly devices to DB
 export const patchConnectedDevices = async () => {
-    scanConnectedDevicesToDb()   // call nmap  
+    scanConnectedDevicesToDb() 
 };
 
 // update data from already listed devices
@@ -386,7 +387,7 @@ export const addShellyDevice = async (obj) => {
           success = false
         };
 
-      } else {
+      // } else {
         // if the data in the "devicesCurrentData" collection is only from today or it doesn't exist
         // this is the first time we are running the program
         // console.error(obj.ip,'No previous data in the "devicesHistoricData" collection');
@@ -478,7 +479,7 @@ export const updDeviceById = async (id,obj) => {
   delete obj.mqttPassword
   await col.updateOne({ _id: new ObjectId(id) }, { $set: obj });
   
-  // provision
+  // re-provision
   console.log("Sending command to device")
   let command
 

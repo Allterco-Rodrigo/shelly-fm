@@ -282,13 +282,13 @@ export default function MqttStatus() {
   },[]);
 
   const DataDisplay = ({ data }) => {
-    console.log(data)
+    // console.log(data)
     return (
       <Row gutter={[16, 16]}>
         {data.map(item =>
           (item.totalEnergy0 || item.a_act_power || item.power || item.current) && (
             (
-            <Col span={8} key={item._id}>
+            <Col span={32} key={item._id}>
               <Card
                 key={item._id}
                 title={<><p>Device Name:&emsp;{item.joinedCol[0].name}</p><p>IP:&emsp;{item.ip}</p></>}
